@@ -109,6 +109,8 @@ namespace MissionPlanner.GCSViews
         List<int> listVibX = new List<int>();
         List<int> listVibY = new List<int>();
         List<int> listVibZ = new List<int>();
+
+        int nMaxSat, nMinSat = 0;
         //end-mr
 
         internal static GMapOverlay tfrpolygons;
@@ -1387,11 +1389,12 @@ namespace MissionPlanner.GCSViews
                             list10.Add(time, ConvertToDouble(list10item.GetValue(MainV2.comPort.MAV.cs, null)));
 
                         var MIN_VIB = 0.01;
+
                         if (listVibX != null)
                         {
-                            if (MainV2.comPort.MAV.cs.vibeclip0 > MIN_VIB)
+                            if ((int)MainV2.comPort.MAV.cs.vibex > MIN_VIB)
                             {
-                                listVibX.Add((int)MainV2.comPort.MAV.cs.vibeclip0);
+                                listVibX.Add((int)MainV2.comPort.MAV.cs.vibex);
                             }
 
                             if (listVibX.Count > 0 && listVibX.Count % TEXT_OBJ_UPDATE_COUNT == 0)
@@ -1404,9 +1407,9 @@ namespace MissionPlanner.GCSViews
 
                         if (listVibY != null)
                         {
-                            if (MainV2.comPort.MAV.cs.vibeclip0 > MIN_VIB)
+                            if ((int)MainV2.comPort.MAV.cs.vibey > MIN_VIB)
                             {
-                                listVibY.Add((int)MainV2.comPort.MAV.cs.vibeclip1);
+                                listVibY.Add((int)MainV2.comPort.MAV.cs.vibey);
                             }
 
                             if (listVibY.Count > 0 && listVibY.Count % TEXT_OBJ_UPDATE_COUNT == 0)
@@ -1419,9 +1422,9 @@ namespace MissionPlanner.GCSViews
 
                         if (listVibZ != null)
                         {
-                            if (MainV2.comPort.MAV.cs.vibeclip0 > MIN_VIB)
+                            if ((int)MainV2.comPort.MAV.cs.vibez > MIN_VIB)
                             {
-                                listVibZ.Add((int)MainV2.comPort.MAV.cs.vibeclip0);
+                                listVibZ.Add((int)MainV2.comPort.MAV.cs.vibez);
                             }
 
                             if (listVibZ.Count > 0 && listVibZ.Count % TEXT_OBJ_UPDATE_COUNT == 0)
@@ -1430,6 +1433,17 @@ namespace MissionPlanner.GCSViews
 
                                 textObjVibZ.Text = average.ToString();
                             }
+                        }
+
+                        if (MainV2.comPort.MAV.cs.satcount > nMaxSat)
+                        {
+                            nMaxSat = (int)MainV2.comPort.MAV.cs.satcount;
+                            nMinSat = nMaxSat;
+                        }
+
+                        if (MainV2.comPort.MAV.cs.satcount < nMaxSat && nMinSat > MainV2.comPort.MAV.cs.satcount)
+                        {
+                            nMinSat = (int)MainV2.comPort.MAV.cs.satcount;
                         }
 
                         if (textObjPairs.Count > 0)
@@ -1530,7 +1544,7 @@ namespace MissionPlanner.GCSViews
                                     );
 
                                 textObjWeightBalance.Text = strMsg;
-                                strTmpOutMsg += "\n" + strMsg;
+                                strTmpOutMsg += "\r\n" + strMsg;
 
 
                                 //Yaw Balance
@@ -1541,13 +1555,12 @@ namespace MissionPlanner.GCSViews
                                     );
 
                                 textObjYawBalance.Text = strMsg;
-                                strTmpOutMsg += "\n" + strMsg;
+                                strTmpOutMsg += "\r\n" + strMsg;
 
 
                                 //avg
                                 textObjAvg.Text = "AVG : " + nAvg;
-                                strTmpOutMsg += "\n" + strMsg;
-
+                                strTmpOutMsg += "\r\n" + strMsg;
 
                                 strMsgFileOutput = strTmpOutMsg;
                             }
@@ -2522,6 +2535,9 @@ namespace MissionPlanner.GCSViews
 
         private void clearTunedData()
         {
+            nMinSat = 0;
+            nMaxSat = 0;
+
             listVibX = new List<int>();
             listVibY = new List<int>();
             listVibY = new List<int>();
@@ -2556,9 +2572,14 @@ namespace MissionPlanner.GCSViews
                 System.IO.FileStream fs =
                    (System.IO.FileStream)saveFileDialog1.OpenFile();
 
-                String strFileMsg = DateTime.Now.ToString() + "\n";
+                String strFileMsg = DateTime.Now.ToString() + "\r\n";
                 strFileMsg += strMsgFileOutput;
 
+                strFileMsg += "\r\n[Vib] x:" + (int)listVibX.Average() +
+                    " y:" + (int)listVibY.Average() +
+                    " z:" + (int)listVibZ.Average();
+                strFileMsg += "\r\n[Sat] max:" + nMaxSat.ToString() + " min:" + nMinSat;
+                     
                 // writing data in string
                 byte[] info = new UTF8Encoding(true).GetBytes(strFileMsg);
                 fs.Write(info, 0, info.Length);
