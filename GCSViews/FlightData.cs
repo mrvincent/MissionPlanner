@@ -228,8 +228,6 @@ namespace MissionPlanner.GCSViews
             // populate the unmodified base list
             tabControlactions.TabPages.ForEach(i => { TabListOriginal.Add((TabPage)i); });
 
-            CB_tuning.Checked = true;
-
             //  mymap.Manager.UseMemoryCache = false;
 
             log.Info("Tunning Graph Settings");
@@ -2501,6 +2499,17 @@ namespace MissionPlanner.GCSViews
                 ZedGraphTimer.Enabled = false;
                 ZedGraphTimer.Stop();
                 zg1.Visible = false;
+
+                //mr
+                //hard-coded
+                list1Total = new List<int>();
+                list2Total = new List<int>();
+                list3Total = new List<int>();
+                list4Total = new List<int>();
+                list5Total = new List<int>();
+                list6Total = new List<int>();
+                list7Total = new List<int>();
+                list8Total = new List<int>();
             }
         }
 

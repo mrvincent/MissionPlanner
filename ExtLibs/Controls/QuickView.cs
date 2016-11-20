@@ -129,10 +129,10 @@ namespace MissionPlanner.Controls
 
             float newSize = this.Font.Size * ratio;
 
-            if (newSize < 8)
-                newSize = 8;
+            if (newSize < 10)
+                newSize = 10;
 
-            labelWithPseudoOpacity2.Font = new Font(labelWithPseudoOpacity2.Font.FontFamily, newSize - 2, labelWithPseudoOpacity2.Font.Style);
+            labelWithPseudoOpacity2.Font = new Font(labelWithPseudoOpacity2.Font.FontFamily, newSize - 4, labelWithPseudoOpacity2.Font.Style);
         }
 
         protected override void OnResize(EventArgs e)
