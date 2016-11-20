@@ -72,6 +72,44 @@ namespace MissionPlanner.GCSViews
         CurveItem list9curve;
         CurveItem list10curve;
 
+
+        //mr
+        TextObj textObj1item;
+        TextObj textObj2item;
+        TextObj textObj3item;
+        TextObj textObj4item;
+        TextObj textObj5item;
+        TextObj textObj6item;
+        TextObj textObj7item;
+        TextObj textObj8item;
+        TextObj textObj9item;
+        TextObj textObj10item;
+
+        TextObj textObjMinMax;
+        TextObj textObjWeightBalance;
+        TextObj textObjYawBalance;
+        TextObj textObjAvg;
+
+        TextObj textObjVibX;
+        TextObj textObjVibY;
+        TextObj textObjVibZ;
+
+        Dictionary<TextObj, int> textObjPairs = new Dictionary<TextObj, int>();
+
+        List<int> list1Total = new List<int>();
+        List<int> list2Total = new List<int>();
+        List<int> list3Total = new List<int>();
+        List<int> list4Total = new List<int>();
+        List<int> list5Total = new List<int>();
+        List<int> list6Total = new List<int>();
+        List<int> list7Total = new List<int>();
+        List<int> list8Total = new List<int>();
+
+        List<int> listVibX = new List<int>();
+        List<int> listVibY = new List<int>();
+        List<int> listVibZ = new List<int>();
+        //end-mr
+
         internal static GMapOverlay tfrpolygons;
         public static GMapOverlay kmlpolygons;
         internal static GMapOverlay geofence;
@@ -189,6 +227,8 @@ namespace MissionPlanner.GCSViews
 
             // populate the unmodified base list
             tabControlactions.TabPages.ForEach(i => { TabListOriginal.Add((TabPage)i); });
+
+            CB_tuning.Checked = true;
 
             //  mymap.Manager.UseMemoryCache = false;
 
@@ -325,6 +365,47 @@ namespace MissionPlanner.GCSViews
             {
                 Gspeed.MaxValue = gspeedMax;
             }
+
+
+
+            //mr
+
+            float POS_X_1 = 0.5f;
+            float POX_X_2 = 0.85f;
+
+            float POX_Y_1 = 0.85f;
+            float POX_Y_2 = 0.95f;
+
+            textObjMinMax = new TextObj("Diff ", POX_X_2, POX_Y_1, CoordType.ChartFraction, AlignH.Left, AlignV.Bottom);
+            textObjAvg = new TextObj("Avg  ", POX_X_2, POX_Y_2, CoordType.ChartFraction, AlignH.Left, AlignV.Bottom);
+
+            textObjWeightBalance = new TextObj("Weight", POS_X_1, POX_Y_1, CoordType.ChartFraction, AlignH.Left, AlignV.Bottom);
+            textObjYawBalance = new TextObj("Yaw", POS_X_1, POX_Y_2, CoordType.ChartFraction, AlignH.Left, AlignV.Bottom);
+
+            textObjVibX = new TextObj("Vib (X) : 0", 0.05f, POX_Y_2, CoordType.ChartFraction, AlignH.Left, AlignV.Bottom);
+            textObjVibY = new TextObj("(Y) : 0", 0.2f, POX_Y_2, CoordType.ChartFraction, AlignH.Left, AlignV.Bottom);
+            textObjVibZ = new TextObj("(Z) : 0", 0.3f, POX_Y_2, CoordType.ChartFraction, AlignH.Left, AlignV.Bottom);
+
+            zg1.GraphPane.GraphObjList.Add(textObjMinMax);
+            zg1.GraphPane.GraphObjList.Add(textObjWeightBalance);
+            zg1.GraphPane.GraphObjList.Add(textObjYawBalance);
+            zg1.GraphPane.GraphObjList.Add(textObjAvg);
+
+            zg1.GraphPane.GraphObjList.Add(textObjVibX);
+            zg1.GraphPane.GraphObjList.Add(textObjVibY);
+            zg1.GraphPane.GraphObjList.Add(textObjVibZ);
+
+            //mr
+            if (CB_tuning.Checked)
+            {
+                splitContainer1.Panel1Collapsed = false;
+                ZedGraphTimer.Enabled = true;
+                ZedGraphTimer.Start();
+                zg1.Visible = true;
+                zg1.Refresh();
+            }
+            //end-mr
+
 
             MainV2.comPort.ParamListChanged += FlightData_ParentChanged;
 
@@ -1101,6 +1182,371 @@ namespace MissionPlanner.GCSViews
                         if (list10item != null)
                             list10.Add(time, ConvertToDouble(list10item.GetValue(MainV2.comPort.MAV.cs, null)));
                     }
+
+
+                    //mr
+                    #region updateTuningTab
+                    // udpate tunning tab
+                    if (tunning.AddMilliseconds(50) < DateTime.Now && CB_tuning.Checked)
+                    {
+                        double MIN_THROTTLE = 1300;
+                        int TEXT_OBJ_UPDATE_COUNT = 100;
+
+                        double time = (Environment.TickCount - tickStart) / 1000.0;
+                        if (list1item != null)
+                        {
+                            double number = ConvertToDouble(list1item.GetValue(MainV2.comPort.MAV.cs, null));
+                            list1.Add(time, number);
+
+                            if (number > MIN_THROTTLE)
+                                list1Total.Add((int)number);
+
+                            if (list1Total.Count > 0 && list1Total.Count % TEXT_OBJ_UPDATE_COUNT == 0)
+                            {
+                                int average = (int)list1Total.Average();
+
+                                var bottomElements = list1Total.Skip(list1Total.Count - TEXT_OBJ_UPDATE_COUNT);
+                                int average_bottom = (int)bottomElements.Average();
+
+                                textObj1item.Text = average + "/" + average_bottom;
+                                if (textObjPairs.ContainsKey(textObj1item))
+                                    textObjPairs[textObj1item] = average;
+                                else
+                                    textObjPairs.Add(textObj1item, average);
+                            }
+                        }
+
+                        if (list2item != null)
+                        {
+                            double number = ConvertToDouble(list2item.GetValue(MainV2.comPort.MAV.cs, null));
+                            list2.Add(time, number);
+
+                            if (number > MIN_THROTTLE)
+                                list2Total.Add((int)number);
+
+                            if (list2Total.Count > 0 && list2Total.Count % TEXT_OBJ_UPDATE_COUNT == 0)
+                            {
+                                int average = (int)list2Total.Average();
+
+                                var bottomElements = list2Total.Skip(list2Total.Count - TEXT_OBJ_UPDATE_COUNT);
+                                int average_bottom = (int)bottomElements.Average();
+
+                                textObj2item.Text = average + "/" + average_bottom;
+
+                                if (textObjPairs.ContainsKey(textObj2item))
+                                    textObjPairs[textObj2item] = average;
+                                else
+                                    textObjPairs.Add(textObj2item, average);
+                            }
+                        }
+
+                        if (list3item != null)
+                        {
+                            double number = ConvertToDouble(list3item.GetValue(MainV2.comPort.MAV.cs, null));
+                            list3.Add(time, number);
+
+                            if (number > MIN_THROTTLE)
+                                list3Total.Add((int)number);
+
+                            if (list3Total.Count > 0 && list3Total.Count % TEXT_OBJ_UPDATE_COUNT == 0)
+                            {
+                                int average = (int)list3Total.Average();
+
+                                var bottomElements = list3Total.Skip(list3Total.Count - TEXT_OBJ_UPDATE_COUNT);
+                                int average_bottom = (int)bottomElements.Average();
+
+                                textObj3item.Text = average + "/" + average_bottom;
+
+                                if (textObjPairs.ContainsKey(textObj3item))
+                                    textObjPairs[textObj3item] = average;
+                                else
+                                    textObjPairs.Add(textObj3item, average);
+                            }
+                        }
+                        if (list4item != null)
+                        {
+                            double number = ConvertToDouble(list4item.GetValue(MainV2.comPort.MAV.cs, null));
+                            list4.Add(time, number);
+
+                            if (number > MIN_THROTTLE)
+                                list4Total.Add((int)number);
+
+                            if (list4Total.Count > 0 && list4Total.Count % TEXT_OBJ_UPDATE_COUNT == 0)
+                            {
+                                int average = (int)list4Total.Average();
+
+                                var bottomElements = list4Total.Skip(list4Total.Count - TEXT_OBJ_UPDATE_COUNT);
+                                int average_bottom = (int)bottomElements.Average();
+
+                                textObj4item.Text = average + "/" + average_bottom;
+
+                                if (textObjPairs.ContainsKey(textObj4item))
+                                    textObjPairs[textObj4item] = average;
+                                else
+                                    textObjPairs.Add(textObj4item, average);
+                            }
+                        }
+                        if (list5item != null)
+                        {
+                            double number = ConvertToDouble(list5item.GetValue(MainV2.comPort.MAV.cs, null));
+                            list5.Add(time, number);
+
+                            if (number > MIN_THROTTLE)
+                                list5Total.Add((int)number);
+
+                            if (list5Total.Count > 0 && list5Total.Count % TEXT_OBJ_UPDATE_COUNT == 0)
+                            {
+                                int average = (int)list5Total.Average();
+
+                                var bottomElements = list5Total.Skip(list5Total.Count - TEXT_OBJ_UPDATE_COUNT);
+                                int average_bottom = (int)bottomElements.Average();
+
+                                textObj5item.Text = average + "/" + average_bottom;
+
+                                if (textObjPairs.ContainsKey(textObj5item))
+                                    textObjPairs[textObj5item] = average;
+                                else
+                                    textObjPairs.Add(textObj5item, average);
+                            }
+                        }
+                        if (list6item != null)
+                        {
+                            double number = ConvertToDouble(list6item.GetValue(MainV2.comPort.MAV.cs, null));
+                            list6.Add(time, number);
+
+                            if (number > MIN_THROTTLE)
+                                list6Total.Add((int)number);
+
+                            if (list6Total.Count > 0 && list6Total.Count % TEXT_OBJ_UPDATE_COUNT == 0)
+                            {
+                                int average = (int)list6Total.Average();
+
+                                var bottomElements = list6Total.Skip(list6Total.Count - TEXT_OBJ_UPDATE_COUNT);
+                                int average_bottom = (int)bottomElements.Average();
+
+                                textObj6item.Text = average + "/" + average_bottom;
+
+                                if (textObjPairs.ContainsKey(textObj6item))
+                                    textObjPairs[textObj6item] = average;
+                                else
+                                    textObjPairs.Add(textObj6item, average);
+                            }
+                        }
+                        if (list7item != null)
+                        {
+                            double number = ConvertToDouble(list7item.GetValue(MainV2.comPort.MAV.cs, null));
+                            list7.Add(time, number);
+
+                            if (number > MIN_THROTTLE)
+                                list7Total.Add((int)number);
+
+                            if (list7Total.Count > 0 && list7Total.Count % TEXT_OBJ_UPDATE_COUNT == 0)
+                            {
+                                int average = (int)list7Total.Average();
+
+                                var bottomElements = list7Total.Skip(list7Total.Count - TEXT_OBJ_UPDATE_COUNT);
+                                int average_bottom = (int)bottomElements.Average();
+
+                                textObj7item.Text = average + "/" + average_bottom;
+
+                                if (textObjPairs.ContainsKey(textObj7item))
+                                    textObjPairs[textObj7item] = average;
+                                else
+                                    textObjPairs.Add(textObj7item, average);
+                            }
+                        }
+                        if (list8item != null)
+                        {
+                            double number = ConvertToDouble(list8item.GetValue(MainV2.comPort.MAV.cs, null));
+                            list8.Add(time, number);
+
+                            if (number > MIN_THROTTLE)
+                                list8Total.Add((int)number);
+
+                            if (list8Total.Count > 0 && list8Total.Count % TEXT_OBJ_UPDATE_COUNT == 0)
+                            {
+                                int average = (int)list8Total.Average();
+
+                                var bottomElements = list8Total.Skip(list8Total.Count - TEXT_OBJ_UPDATE_COUNT);
+                                int average_bottom = (int)bottomElements.Average();
+
+                                textObj8item.Text = average + "/" + average_bottom;
+
+                                if (textObjPairs.ContainsKey(textObj8item))
+                                    textObjPairs[textObj8item] = average;
+                                else
+                                    textObjPairs.Add(textObj8item, average);
+                            }
+                        }
+                        if (list9item != null)
+                            list9.Add(time, ConvertToDouble(list9item.GetValue(MainV2.comPort.MAV.cs, null)));
+                        if (list10item != null)
+                            list10.Add(time, ConvertToDouble(list10item.GetValue(MainV2.comPort.MAV.cs, null)));
+
+                        var MIN_VIB = 0.01;
+                        if (listVibX != null)
+                        {
+                            if (MainV2.comPort.MAV.cs.vibeclip0 > MIN_VIB)
+                            {
+                                listVibX.Add((int)MainV2.comPort.MAV.cs.vibeclip0);
+                            }
+
+                            if (listVibX.Count > 0 && listVibX.Count % TEXT_OBJ_UPDATE_COUNT == 0)
+                            {
+                                int average = (int)listVibX.Average();
+
+                                textObjVibX.Text = average.ToString();
+                            }
+                        }
+
+                        if (listVibY != null)
+                        {
+                            if (MainV2.comPort.MAV.cs.vibeclip0 > MIN_VIB)
+                            {
+                                listVibY.Add((int)MainV2.comPort.MAV.cs.vibeclip1);
+                            }
+
+                            if (listVibY.Count > 0 && listVibY.Count % TEXT_OBJ_UPDATE_COUNT == 0)
+                            {
+                                int average = (int)listVibY.Average();
+
+                                textObjVibY.Text = average.ToString();
+                            }
+                        }
+
+                        if (listVibZ != null)
+                        {
+                            if (MainV2.comPort.MAV.cs.vibeclip0 > MIN_VIB)
+                            {
+                                listVibZ.Add((int)MainV2.comPort.MAV.cs.vibeclip0);
+                            }
+
+                            if (listVibZ.Count > 0 && listVibZ.Count % TEXT_OBJ_UPDATE_COUNT == 0)
+                            {
+                                int average = (int)listVibZ.Average();
+
+                                textObjVibZ.Text = average.ToString();
+                            }
+                        }
+
+                        if (textObjPairs.Count > 0)
+                        {
+                            List<TextObj> textObjects = textObjPairs.OrderByDescending(kp => kp.Value)
+                                      .Select(kp => kp.Key)
+                                      .ToList();
+
+                            List<int> PWMvalues = textObjPairs.OrderByDescending(kp => kp.Value)
+                                      .Select(kp => kp.Value)
+                                      .ToList();
+
+                            float posY = 0.1f;
+                            float incrementY = 0.08f;
+                            foreach (TextObj textObject in textObjects)
+                            {
+                                textObject.Location.Y = posY;
+                                posY += incrementY;
+
+                                textObject.FontSpec.Fill = new Fill(Color.Red);
+                            }
+
+                            for (int i = 0; i < textObjects.Count; ++i)
+                            {
+                                TextObj textObject = textObjects[i];
+
+                                if (i == 0)
+                                {
+                                    textObject.FontSpec.Fill = new Fill(Color.Red);
+                                    textObject.FontSpec.FontColor = Color.White;
+                                }
+                                else if (i == textObjects.Count - 1)
+                                {
+                                    textObject.FontSpec.Fill = new Fill(Color.Red);
+                                    textObject.FontSpec.FontColor = Color.White;
+                                }
+                                else
+                                {
+                                    textObject.FontSpec.Fill = new Fill(Color.White);
+                                    textObject.FontSpec.FontColor = Color.Black;
+                                }
+                            }
+
+                            Color colorType1 = Color.Brown;
+                            Color colorType2 = Color.White;
+
+                            Color colorType3 = Color.CadetBlue;
+                            Color colorType4 = Color.White;
+
+                            textObjMinMax.FontSpec.Fill = new Fill(colorType1);
+                            textObjMinMax.FontSpec.FontColor = colorType2;
+                            textObjAvg.FontSpec.Fill = new Fill(colorType1);
+                            textObjAvg.FontSpec.FontColor = colorType2;
+
+                            textObjWeightBalance.FontSpec.Fill = new Fill(colorType3);
+                            textObjWeightBalance.FontSpec.FontColor = colorType4;
+                            textObjYawBalance.FontSpec.Fill = new Fill(colorType3);
+                            textObjYawBalance.FontSpec.FontColor = colorType4;
+
+                            textObjVibX.FontSpec.Fill = new Fill(colorType3);
+                            textObjVibX.FontSpec.FontColor = colorType4;
+                            textObjVibY.FontSpec.Fill = new Fill(colorType3);
+                            textObjVibY.FontSpec.FontColor = colorType4;
+                            textObjVibZ.FontSpec.Fill = new Fill(colorType3);
+                            textObjVibZ.FontSpec.FontColor = colorType4;
+
+                            //String strFormat = "Max:{0}\nDiff:{1}\nMin:{2}";
+                            //textObjMinMax.Text = String.Format(strFormat, PWMvalues[0], (PWMvalues[0] - PWMvalues[PWMvalues.Count - 1]), PWMvalues[PWMvalues.Count - 1]);
+
+                            textObjMinMax.Text = "Diff : " + (PWMvalues[0] - PWMvalues[PWMvalues.Count - 1]);
+
+
+                            if (textObjPairs.ContainsKey(textObj1item) &&
+                                textObjPairs.ContainsKey(textObj2item) &&
+                                textObjPairs.ContainsKey(textObj3item) &&
+                                textObjPairs.ContainsKey(textObj4item) &&
+                                textObjPairs.ContainsKey(textObj5item) &&
+                                textObjPairs.ContainsKey(textObj6item) &&
+                                textObjPairs.ContainsKey(textObj7item) &&
+                                textObjPairs.ContainsKey(textObj8item)
+                                )
+                            {
+                                int nAvg = (int)PWMvalues.Average();
+
+
+                                //Weight Balance
+                                String strFormat = "{0}/{1}/{2}/{3}";
+                                String strMsg = String.Format(strFormat,
+                                    (textObjPairs[textObj2item] + textObjPairs[textObj5item]) - nAvg * 2,
+                                    (textObjPairs[textObj1item] + textObjPairs[textObj6item]) - nAvg * 2,
+                                    (textObjPairs[textObj3item] + textObjPairs[textObj8item]) - nAvg * 2,
+                                    (textObjPairs[textObj4item] + textObjPairs[textObj7item]) - nAvg * 2
+                                    );
+
+                                textObjWeightBalance.Text = strMsg;
+
+
+                                //Yaw Balance
+                                strFormat = "[CW]{0}/[CCW]{1}";
+                                strMsg = String.Format(strFormat,
+                                    textObjPairs[textObj2item] + textObjPairs[textObj4item] + textObjPairs[textObj6item] + textObjPairs[textObj8item] - nAvg * 4,
+                                    textObjPairs[textObj1item] + textObjPairs[textObj3item] + textObjPairs[textObj5item] + textObjPairs[textObj7item] - nAvg * 4
+                                    );
+
+                                textObjYawBalance.Text = strMsg;
+
+
+                                //avg
+                                textObjAvg.Text = "AVG : " + nAvg;
+                            }
+
+
+                        }
+
+                    }
+
+
+                    #endregion
+
+
 
                     // update map
                     if (tracklast.AddSeconds(1.2) < DateTime.Now)
@@ -1905,6 +2351,7 @@ namespace MissionPlanner.GCSViews
 
             // Sample at 50ms intervals
             ZedGraphTimer.Interval = 200;
+
             //timer1.Enabled = true;
             //timer1.Start();
 
