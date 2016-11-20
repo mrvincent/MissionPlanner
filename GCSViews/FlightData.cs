@@ -74,16 +74,17 @@ namespace MissionPlanner.GCSViews
 
 
         //mr
-        TextObj textObj1item;
-        TextObj textObj2item;
-        TextObj textObj3item;
-        TextObj textObj4item;
-        TextObj textObj5item;
-        TextObj textObj6item;
-        TextObj textObj7item;
-        TextObj textObj8item;
-        TextObj textObj9item;
-        TextObj textObj10item;
+
+        String strMsgFileOutput = "";
+
+        TextObj textObj1item = null;
+        TextObj textObj2item = null;
+        TextObj textObj3item = null;
+        TextObj textObj4item = null;
+        TextObj textObj5item = null;
+        TextObj textObj6item = null;
+        TextObj textObj7item = null;
+        TextObj textObj8item = null;
 
         TextObj textObjMinMax;
         TextObj textObjWeightBalance;
@@ -1494,8 +1495,10 @@ namespace MissionPlanner.GCSViews
                             //String strFormat = "Max:{0}\nDiff:{1}\nMin:{2}";
                             //textObjMinMax.Text = String.Format(strFormat, PWMvalues[0], (PWMvalues[0] - PWMvalues[PWMvalues.Count - 1]), PWMvalues[PWMvalues.Count - 1]);
 
-                            textObjMinMax.Text = "Diff : " + (PWMvalues[0] - PWMvalues[PWMvalues.Count - 1]);
 
+                            String strMsg = "Diff : " + (PWMvalues[0] - PWMvalues[PWMvalues.Count - 1]);
+
+                            textObjMinMax.Text = strMsg;
 
                             if (textObjPairs.ContainsKey(textObj1item) &&
                                 textObjPairs.ContainsKey(textObj2item) &&
@@ -1507,12 +1510,15 @@ namespace MissionPlanner.GCSViews
                                 textObjPairs.ContainsKey(textObj8item)
                                 )
                             {
+                                String strTmpOutMsg = String.Empty;
+                                strTmpOutMsg = strMsg;
+
                                 int nAvg = (int)PWMvalues.Average();
 
 
                                 //Weight Balance
                                 String strFormat = "{0}/{1}/{2}/{3}";
-                                String strMsg = String.Format(strFormat,
+                                strMsg = String.Format(strFormat,
                                     (textObjPairs[textObj2item] + textObjPairs[textObj5item]) - nAvg * 2,
                                     (textObjPairs[textObj1item] + textObjPairs[textObj6item]) - nAvg * 2,
                                     (textObjPairs[textObj3item] + textObjPairs[textObj8item]) - nAvg * 2,
@@ -1520,6 +1526,7 @@ namespace MissionPlanner.GCSViews
                                     );
 
                                 textObjWeightBalance.Text = strMsg;
+                                strTmpOutMsg = "\n" + strMsg;
 
 
                                 //Yaw Balance
@@ -1530,15 +1537,17 @@ namespace MissionPlanner.GCSViews
                                     );
 
                                 textObjYawBalance.Text = strMsg;
+                                strTmpOutMsg = "\n" + strMsg;
 
 
                                 //avg
                                 textObjAvg.Text = "AVG : " + nAvg;
+                                strTmpOutMsg = "\n" + strMsg;
+
+
+                                strMsgFileOutput = strTmpOutMsg;
                             }
-
-
                         }
-
                     }
 
 
@@ -2500,6 +2509,8 @@ namespace MissionPlanner.GCSViews
                 ZedGraphTimer.Stop();
                 zg1.Visible = false;
 
+                WriteTuningLog();
+
                 //mr
                 //hard-coded
                 list1Total = new List<int>();
@@ -2510,6 +2521,41 @@ namespace MissionPlanner.GCSViews
                 list6Total = new List<int>();
                 list7Total = new List<int>();
                 list8Total = new List<int>();
+            }
+        }
+
+        private void WriteTuningLog()
+        {
+            if (list1Total.Count == 0)
+                return;
+
+            // Displays a SaveFileDialog so the user can save the Image
+            // assigned to Button2.
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "Text file|*.txt";
+            saveFileDialog1.Title = "Save an Tuning Log File";
+            saveFileDialog1.ShowDialog();
+
+            // If the file name is not an empty string open it for saving.
+            if (saveFileDialog1.FileName != "")
+            {
+                // Saves the Image via a FileStream created by the OpenFile method.
+                System.IO.FileStream fs =
+                   (System.IO.FileStream)saveFileDialog1.OpenFile();
+
+                String strFileMsg = DateTime.Now.ToString() + "\n";
+                strFileMsg += strMsgFileOutput;
+                strMsgFileOutput = String.Empty;
+
+                // writing data in string
+                byte[] info = new UTF8Encoding(true).GetBytes(strMsgFileOutput);
+                fs.Write(info, 0, info.Length);
+
+                // writing data in bytes already
+                byte[] data = new byte[] { 0x0 };
+                fs.Write(data, 0, data.Length);
+
+                fs.Close();
             }
         }
 

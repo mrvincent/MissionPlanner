@@ -2593,6 +2593,10 @@ namespace MissionPlanner
 
             ThreadPool.QueueUserWorkItem(BGGetKIndex);
 
+
+            //mr
+            /* remove firmware update
+
             // update firmware version list - only once per day
             ThreadPool.QueueUserWorkItem(BGFirmwareCheck);
 
@@ -2622,6 +2626,8 @@ namespace MissionPlanner
                 Tracking.AddException(ex);
             }
 
+            */
+
             this.ResumeLayout();
 
             Program.Splash.Close();
@@ -2629,6 +2635,8 @@ namespace MissionPlanner
             MissionPlanner.Utilities.Tracking.AddTiming("AppLoad", "Load Time",
                 (DateTime.Now - Program.starttime).TotalMilliseconds, "");
 
+            //mr
+            /*remove update check
             try
             {
                 // single update check per day - in a seperate thread
@@ -2647,6 +2655,7 @@ namespace MissionPlanner
             {
                 log.Error("Update check failed", ex);
             }
+            */
 
             // play a tlog that was passed to the program/ load a bin log passed
             if (Program.args.Length > 0)

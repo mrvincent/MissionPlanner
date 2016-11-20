@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright ?2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -834,6 +834,8 @@ namespace ZedGraph
 				}
 			}
 
+            //mr
+            /*
             if (n > 0)
             {
                 string label = curve.Label.Text;
@@ -842,6 +844,7 @@ namespace ZedGraph
                     label = label.Substring(0, idx);
                 curve.Label.Text = label + " (Min: " + curveMin.ToString("0") + " Max: " + curveMax.ToString("0") + " Mean: " + curveMean.ToString("0") + ")";
             }
+            */
 		}
 
 		/// <summary>
