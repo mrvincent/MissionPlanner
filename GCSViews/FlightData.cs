@@ -77,14 +77,14 @@ namespace MissionPlanner.GCSViews
 
         String strMsgFileOutput = "";
 
-        TextObj textObj1item = null;
-        TextObj textObj2item = null;
-        TextObj textObj3item = null;
-        TextObj textObj4item = null;
-        TextObj textObj5item = null;
-        TextObj textObj6item = null;
-        TextObj textObj7item = null;
-        TextObj textObj8item = null;
+        TextObj textObj1item = new TextObj();
+        TextObj textObj2item = new TextObj();
+        TextObj textObj3item = new TextObj();
+        TextObj textObj4item = new TextObj();
+        TextObj textObj5item = new TextObj();
+        TextObj textObj6item = new TextObj();
+        TextObj textObj7item = new TextObj();
+        TextObj textObj8item = new TextObj();
 
         TextObj textObjMinMax;
         TextObj textObjWeightBalance;
@@ -371,7 +371,6 @@ namespace MissionPlanner.GCSViews
 
 
             //mr
-
             float POS_X_1 = 0.5f;
             float POX_X_2 = 0.85f;
 
@@ -1211,6 +1210,8 @@ namespace MissionPlanner.GCSViews
                                 int average_bottom = (int)bottomElements.Average();
 
                                 textObj1item.Text = average + "/" + average_bottom;
+
+
                                 if (textObjPairs.ContainsKey(textObj1item))
                                     textObjPairs[textObj1item] = average;
                                 else
@@ -1529,7 +1530,7 @@ namespace MissionPlanner.GCSViews
                                     );
 
                                 textObjWeightBalance.Text = strMsg;
-                                strTmpOutMsg = "\n" + strMsg;
+                                strTmpOutMsg += "\n" + strMsg;
 
 
                                 //Yaw Balance
@@ -1540,12 +1541,12 @@ namespace MissionPlanner.GCSViews
                                     );
 
                                 textObjYawBalance.Text = strMsg;
-                                strTmpOutMsg = "\n" + strMsg;
+                                strTmpOutMsg += "\n" + strMsg;
 
 
                                 //avg
                                 textObjAvg.Text = "AVG : " + nAvg;
-                                strTmpOutMsg = "\n" + strMsg;
+                                strTmpOutMsg += "\n" + strMsg;
 
 
                                 strMsgFileOutput = strTmpOutMsg;
@@ -2521,6 +2522,10 @@ namespace MissionPlanner.GCSViews
 
         private void clearTunedData()
         {
+            listVibX = new List<int>();
+            listVibY = new List<int>();
+            listVibY = new List<int>();
+
             //hard-coded
             list1Total = new List<int>();
             list2Total = new List<int>();
@@ -2553,10 +2558,9 @@ namespace MissionPlanner.GCSViews
 
                 String strFileMsg = DateTime.Now.ToString() + "\n";
                 strFileMsg += strMsgFileOutput;
-                strMsgFileOutput = String.Empty;
 
                 // writing data in string
-                byte[] info = new UTF8Encoding(true).GetBytes(strMsgFileOutput);
+                byte[] info = new UTF8Encoding(true).GetBytes(strFileMsg);
                 fs.Write(info, 0, info.Length);
 
                 // writing data in bytes already
