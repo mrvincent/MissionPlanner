@@ -1544,7 +1544,7 @@ namespace MissionPlanner.GCSViews
                                     );
 
                                 textObjWeightBalance.Text = strMsg;
-                                strTmpOutMsg += "\r\n" + strMsg;
+                                strTmpOutMsg += "\r\nWeightBalance : " + strMsg;
 
 
                                 //Yaw Balance
@@ -1555,11 +1555,12 @@ namespace MissionPlanner.GCSViews
                                     );
 
                                 textObjYawBalance.Text = strMsg;
-                                strTmpOutMsg += "\r\n" + strMsg;
+                                strTmpOutMsg += "\r\nYawBalance : " + strMsg;
 
 
                                 //avg
-                                textObjAvg.Text = "AVG : " + nAvg;
+                                strMsg = "AVG : " + nAvg;
+                                textObjAvg.Text = strMsg;
                                 strTmpOutMsg += "\r\n" + strMsg;
 
                                 strMsgFileOutput = strTmpOutMsg;
@@ -2558,15 +2559,21 @@ namespace MissionPlanner.GCSViews
             if (list1Total.Count == 0)
                 return;
 
+            String strLogPath = Application.StartupPath + "\\TunedData";
+
+            if (!Directory.Exists(strLogPath))
+                Directory.CreateDirectory(strLogPath);
+
             // Displays a SaveFileDialog so the user can save the Image
             // assigned to Button2.
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.InitialDirectory = strLogPath;
             saveFileDialog1.Filter = "Text file|*.txt";
             saveFileDialog1.Title = "Save an Tuning Log File";
             saveFileDialog1.ShowDialog();
 
-            // If the file name is not an empty string open it for saving.
-            if (saveFileDialog1.FileName != "")
+                // If the file name is not an empty string open it for saving.
+                if (saveFileDialog1.FileName != "")
             {
                 // Saves the Image via a FileStream created by the OpenFile method.
                 System.IO.FileStream fs =
@@ -2579,7 +2586,7 @@ namespace MissionPlanner.GCSViews
                     " y:" + (int)listVibY.Average() +
                     " z:" + (int)listVibZ.Average();
                 strFileMsg += "\r\n[Sat] max:" + nMaxSat.ToString() + " min:" + nMinSat;
-                     
+
                 // writing data in string
                 byte[] info = new UTF8Encoding(true).GetBytes(strFileMsg);
                 fs.Write(info, 0, info.Length);
@@ -2590,6 +2597,18 @@ namespace MissionPlanner.GCSViews
 
                 fs.Close();
             }
+
+                /*
+            //#1-1
+            System.IO.Directory.CreateDirectory(Application.StartupPath + @"TunedData");
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter wStream = new StreamWriter(@"TunedData", true, Encoding.Default);
+                wStream.Close();
+            }
+            //#1-1
+            */
         }
 
         private void BUT_RAWSensor_Click(object sender, EventArgs e)
