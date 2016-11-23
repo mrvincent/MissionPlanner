@@ -2525,11 +2525,6 @@ namespace MissionPlanner.GCSViews
                 ZedGraphTimer.Enabled = false;
                 ZedGraphTimer.Stop();
                 zg1.Visible = false;
-
-                WriteTuningLog();
-
-                //mr
-                clearTunedData();
             }
         }
 
@@ -2553,10 +2548,13 @@ namespace MissionPlanner.GCSViews
             list8Total = new List<int>();
         }
 
-        private void WriteTuningLog()
+        private bool WriteTuningLog()
         {
             if (list1Total.Count == 0)
-                return;
+            {
+                MessageBox.Show("Error", "No data");
+                return false;
+            }
 
             // Displays a SaveFileDialog so the user can save the Image
             // assigned to Button2.
@@ -2566,30 +2564,32 @@ namespace MissionPlanner.GCSViews
             saveFileDialog1.ShowDialog();
 
             // If the file name is not an empty string open it for saving.
-            if (saveFileDialog1.FileName != "")
-            {
-                // Saves the Image via a FileStream created by the OpenFile method.
-                System.IO.FileStream fs =
-                   (System.IO.FileStream)saveFileDialog1.OpenFile();
+            if (saveFileDialog1.FileName == "")
+                return false;
 
-                String strFileMsg = DateTime.Now.ToString() + "\r\n";
-                strFileMsg += strMsgFileOutput;
+            // Saves the Image via a FileStream created by the OpenFile method.
+            System.IO.FileStream fs =
+               (System.IO.FileStream)saveFileDialog1.OpenFile();
 
-                strFileMsg += "\r\n[Vib] x:" + (int)listVibX.Average() +
-                    " y:" + (int)listVibY.Average() +
-                    " z:" + (int)listVibZ.Average();
-                strFileMsg += "\r\n[Sat] max:" + nMaxSat.ToString() + " min:" + nMinSat;
-                     
-                // writing data in string
-                byte[] info = new UTF8Encoding(true).GetBytes(strFileMsg);
-                fs.Write(info, 0, info.Length);
+            String strFileMsg = DateTime.Now.ToString() + "\r\n";
+            strFileMsg += strMsgFileOutput;
 
-                // writing data in bytes already
-                byte[] data = new byte[] { 0x0 };
-                fs.Write(data, 0, data.Length);
+            strFileMsg += "\r\n[Vib] x:" + (int)listVibX.Average() +
+                " y:" + (int)listVibY.Average() +
+                " z:" + (int)listVibZ.Average();
+            strFileMsg += "\r\n[Sat] max:" + nMaxSat.ToString() + " min:" + nMinSat;
 
-                fs.Close();
-            }
+            // writing data in string
+            byte[] info = new UTF8Encoding(true).GetBytes(strFileMsg);
+            fs.Write(info, 0, info.Length);
+
+            // writing data in bytes already
+            byte[] data = new byte[] { 0x0 };
+            fs.Write(data, 0, data.Length);
+
+            fs.Close();
+            return true;
+
         }
 
         private void BUT_RAWSensor_Click(object sender, EventArgs e)
@@ -4928,6 +4928,27 @@ namespace MissionPlanner.GCSViews
         private void onOffCameraOverlapToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CameraOverlap = onOffCameraOverlapToolStripMenuItem.Checked;
+        }
+
+        //mr
+        private void button_save_Click(object sender, EventArgs e)
+        {
+            if(textBox_aircraftNo.Text.Equals("S0000A"))
+            {
+                MessageBox.Show("Enter Aircraft Number");
+                return;
+            }
+
+            DialogResult dialogResult = MessageBox.Show("Sure", "Some Title", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                WriteTuningLog();
+                clearTunedData();
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                //do something else
+            }
         }
 
         private void altitudeAngelSettingsToolStripMenuItem_Click(object sender, EventArgs e)
