@@ -1557,7 +1557,7 @@ namespace MissionPlanner.GCSViews
                                 textObjYawBalance.Text = strMsg;
                                 strTmpOutMsg += "\r\nYawBalance : " + strMsg;
 
-
+                            
                                 //avg
                                 strMsg = "AVG : " + nAvg;
                                 textObjAvg.Text = strMsg;
