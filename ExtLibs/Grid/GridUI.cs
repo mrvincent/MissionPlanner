@@ -170,15 +170,6 @@ namespace MissionPlanner
             map.MapScaleInfoEnabled = true;
             map.ScalePen = new Pen(Color.Orange);
 
-            foreach (var temp in FlightData.kmlpolygons.Polygons)
-            {
-                kmlpolygonsoverlay.Polygons.Add(new GMapPolygon(temp.Points, "") {Fill = Brushes.Transparent});
-            }
-            foreach (var temp in FlightData.kmlpolygons.Routes)
-            {
-                kmlpolygonsoverlay.Routes.Add(new GMapRoute(temp.Points,""));
-            }
-
             xmlcamera(false, Settings.GetRunningDirectory() + "camerasBuiltin.xml");
 
             xmlcamera(false, Settings.GetUserDataDirectory() + "cameras.xml");

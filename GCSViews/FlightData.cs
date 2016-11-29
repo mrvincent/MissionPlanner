@@ -113,13 +113,6 @@ namespace MissionPlanner.GCSViews
         int nMaxSat, nMinSat = 0;
         //end-mr
 
-        internal static GMapOverlay tfrpolygons;
-        public static GMapOverlay kmlpolygons;
-        internal static GMapOverlay geofence;
-        internal static GMapOverlay rallypointoverlay;
-        internal static GMapOverlay photosoverlay;
-        internal static GMapOverlay poioverlay = new GMapOverlay("POI"); // poi layer
-
         List<TabPage> TabListOriginal = new List<TabPage>();
 
         bool huddropout;
@@ -222,11 +215,8 @@ namespace MissionPlanner.GCSViews
             //    _serializer.SavePath = Application.StartupPath + Path.DirectorySeparatorChar + "FDscreen.xml";
             //    dockContainer1.PreviewRenderer = new PreviewRenderer();
             //
-            mymap = gMapControl1;
             myhud = hud1;
             MainHcopy = MainH;
-
-            mymap.Paint += mymap_Paint;
 
             // populate the unmodified base list
             tabControlactions.TabPages.ForEach(i => { TabListOriginal.Add((TabPage)i); });
@@ -323,47 +313,6 @@ namespace MissionPlanner.GCSViews
             log.Info("Graph Setup");
             CreateChart(zg1);
 
-            // config map      
-            log.Info("Map Setup");
-            gMapControl1.CacheLocation = Settings.GetDataDirectory() +
-                                         "gmapcache" + Path.DirectorySeparatorChar;
-            gMapControl1.MinZoom = 0;
-            gMapControl1.MaxZoom = 24;
-            gMapControl1.Zoom = 3;
-
-            gMapControl1.OnMapZoomChanged += gMapControl1_OnMapZoomChanged;
-
-            gMapControl1.DisableFocusOnMouseEnter = true;
-
-            gMapControl1.OnMarkerEnter += gMapControl1_OnMarkerEnter;
-            gMapControl1.OnMarkerLeave += gMapControl1_OnMarkerLeave;
-
-            gMapControl1.RoutesEnabled = true;
-            gMapControl1.PolygonsEnabled = true;
-
-            tfrpolygons = new GMapOverlay("tfrpolygons");
-            gMapControl1.Overlays.Add(tfrpolygons);
-
-            kmlpolygons = new GMapOverlay("kmlpolygons");
-            gMapControl1.Overlays.Add(kmlpolygons);
-
-            geofence = new GMapOverlay("geofence");
-            gMapControl1.Overlays.Add(geofence);
-
-            polygons = new GMapOverlay("polygons");
-            gMapControl1.Overlays.Add(polygons);
-
-            photosoverlay = new GMapOverlay("photos overlay");
-            gMapControl1.Overlays.Add(photosoverlay);
-
-            routes = new GMapOverlay("routes");
-            gMapControl1.Overlays.Add(routes);
-
-            rallypointoverlay = new GMapOverlay("rally points");
-            gMapControl1.Overlays.Add(rallypointoverlay);
-
-            gMapControl1.Overlays.Add(poioverlay);
-
             float gspeedMax = Settings.Instance.GetFloat("GspeedMAX");
             if (gspeedMax != 0)
             {
@@ -398,17 +347,10 @@ namespace MissionPlanner.GCSViews
             zg1.GraphPane.GraphObjList.Add(textObjVibY);
             zg1.GraphPane.GraphObjList.Add(textObjVibZ);
 
-            //mr
-            if (CB_tuning.Checked)
-            {
-                splitContainer1.Panel1Collapsed = false;
-                ZedGraphTimer.Enabled = true;
-                ZedGraphTimer.Start();
-                zg1.Visible = true;
-                zg1.Refresh();
-            }
-            //end-mr
-
+            ZedGraphTimer.Enabled = true;
+            ZedGraphTimer.Start();
+            zg1.Visible = true;
+            zg1.Refresh();
 
             MainV2.comPort.ParamListChanged += FlightData_ParentChanged;
 
@@ -422,22 +364,6 @@ namespace MissionPlanner.GCSViews
         {
             base.OnInvalidated(e);
             updateBindingSourceWork();
-        }
-
-        void NoFly_NoFlyEvent(object sender, NoFly.NoFly.NoFlyEventArgs e)
-        {
-            Invoke((Action) delegate
-            {
-                foreach (var poly in e.NoFlyZones.Polygons)
-                {
-                    kmlpolygons.Polygons.Add(poly);
-                }
-            });
-        }
-
-        void mymap_Paint(object sender, PaintEventArgs e)
-        {
-            distanceBar1.DoPaintRemote(e);
         }
 
         internal GMapMarker CurrentGMapMarker;
@@ -592,8 +518,7 @@ namespace MissionPlanner.GCSViews
 
             OnResize(EventArgs.Empty);
 
-            if (CB_tuning.Checked)
-                ZedGraphTimer.Start();
+            ZedGraphTimer.Start();
 
             if (MainV2.MONO)
             {
@@ -661,32 +586,6 @@ namespace MissionPlanner.GCSViews
             CustomWarning.defaultsrc = MainV2.comPort.MAV.cs;
             MissionPlanner.Controls.PreFlight.CheckListItem.defaultsrc = MainV2.comPort.MAV.cs;
 
-            if (Settings.Instance["maplast_lat"] != "")
-            {
-                try
-                {
-                    gMapControl1.Position = new PointLatLng(Settings.Instance.GetDouble("maplast_lat"),
-                        Settings.Instance.GetDouble("maplast_lng"));
-                    if (Math.Round(Settings.Instance.GetDouble("maplast_lat"), 1) == 0)
-                    {
-                        // no zoom in
-                        Zoomlevel.Value = 3;
-                        TRK_zoom.Value = 3;
-                    }
-                    else
-                    {
-                        var zoom = Settings.Instance.GetFloat("maplast_zoom");
-                        if (Zoomlevel.Maximum < (decimal) zoom)
-                            zoom = (float)Zoomlevel.Maximum;
-                        Zoomlevel.Value = (decimal)zoom;
-                        TRK_zoom.Value = (float) Zoomlevel.Value;
-                    }
-                }
-                catch
-                {
-                }
-            }
-
             hud1.doResize();
         }
 
@@ -713,11 +612,6 @@ namespace MissionPlanner.GCSViews
                 hud1.Enabled = false;
                 hud1.Visible = false;
             }
-            //     hud1.Location = new Point(-1000,-1000);
-
-            Settings.Instance["maplast_lat"] = gMapControl1.Position.Lat.ToString();
-            Settings.Instance["maplast_lng"] = gMapControl1.Position.Lng.ToString();
-            Settings.Instance["maplast_zoom"] = gMapControl1.Zoom.ToString();
 
             ZedGraphTimer.Stop();
         }
@@ -740,100 +634,6 @@ namespace MissionPlanner.GCSViews
                 e.Font, myBrush, e.Bounds, StringFormat.GenericDefault);
             // If the ListBox has focus, draw a focus rectangle around the selected item.
             e.DrawFocusRectangle();
-        }
-
-        void gMapControl1_OnMapZoomChanged()
-        {
-            try
-            {
-                // Exception System.Runtime.InteropServices.SEHException: External component has thrown an exception.
-                TRK_zoom.Value = (float) gMapControl1.Zoom;
-                Zoomlevel.Value = Convert.ToDecimal(gMapControl1.Zoom);
-            }
-            catch
-            {
-            }
-        }
-
-        private void FlightData_Load(object sender, EventArgs e)
-        {
-            POI.POIModified += POI_POIModified;
-
-            tfr.GotTFRs += tfr_GotTFRs;
-
-            NoFly.NoFly.NoFlyEvent += NoFly_NoFlyEvent;
-
-            // update tabs displayed
-            loadTabControlActions();
-
-            TRK_zoom.Minimum = gMapControl1.MapProvider.MinZoom;
-            TRK_zoom.Maximum = 24;
-            TRK_zoom.Value = (float) gMapControl1.Zoom;
-
-            gMapControl1.EmptyTileColor = Color.Gray;
-
-            Zoomlevel.Minimum = gMapControl1.MapProvider.MinZoom;
-            Zoomlevel.Maximum = 24;
-            Zoomlevel.Value = Convert.ToDecimal(gMapControl1.Zoom);
-
-            var item1 = ParameterMetaDataRepository.GetParameterOptionsInt("MNT_MODE",
-                MainV2.comPort.MAV.cs.firmware.ToString());
-            var item2 = ParameterMetaDataRepository.GetParameterOptionsInt("MNT_DEFLT_MODE",
-                MainV2.comPort.MAV.cs.firmware.ToString());
-            if (item1.Count > 0)
-                CMB_mountmode.DataSource = item1;
-
-            if (item2.Count > 0)
-                CMB_mountmode.DataSource = item2;
-
-            CMB_mountmode.DisplayMember = "Value";
-            CMB_mountmode.ValueMember = "Key";
-
-            if (Settings.Instance["CHK_autopan"] != null)
-                CHK_autopan.Checked = Settings.Instance.GetBoolean("CHK_autopan");
-
-            if (Settings.Instance.ContainsKey("FlightSplitter"))
-            {
-                MainH.SplitterDistance = Settings.Instance.GetInt32("FlightSplitter");
-            }
-
-            if (Settings.Instance.ContainsKey("russian_hud"))
-            {
-                hud1.Russian = Settings.Instance.GetBoolean("russian_hud");
-            }
-
-            hud1.doResize();
-
-            thisthread = new Thread(mainloop);
-            thisthread.Name = "FD Mainloop";
-            thisthread.IsBackground = true;
-            thisthread.Start();
-        }
-
-        void tfr_GotTFRs(object sender, EventArgs e)
-        {
-            Invoke((Action) delegate
-            {
-                foreach (var item in tfr.tfrs)
-                {
-                    List<List<PointLatLng>> points = item.GetPaths();
-
-                    foreach (var list in points)
-                    {
-                        GMapPolygon poly = new GMapPolygon(list, item.NAME);
-
-                        poly.Fill = new SolidBrush(Color.FromArgb(30, Color.Blue));
-
-                        tfrpolygons.Polygons.Add(poly);
-                    }
-                }
-                tfrpolygons.IsVisibile = MainV2.ShowTFR;
-            });
-        }
-
-        void POI_POIModified(object sender, EventArgs e)
-        {
-            POI.UpdateOverlay(poioverlay);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -1161,7 +961,7 @@ namespace MissionPlanner.GCSViews
                     Vario.SetValue(MainV2.comPort.MAV.cs.climbrate);
 
                     // udpate tunning tab
-                    if (tunning.AddMilliseconds(50) < DateTime.Now && CB_tuning.Checked)
+                    if (tunning.AddMilliseconds(50) < DateTime.Now)
                     {
                         double time = (Environment.TickCount - tickStart)/1000.0;
                         if (list1item != null)
@@ -1190,7 +990,7 @@ namespace MissionPlanner.GCSViews
                     //mr
                     #region updateTuningTab
                     // udpate tunning tab
-                    if (tunning.AddMilliseconds(50) < DateTime.Now && CB_tuning.Checked)
+                    if (tunning.AddMilliseconds(50) < DateTime.Now)
                     {
                         double MIN_THROTTLE = 1300;
                         int TEXT_OBJ_UPDATE_COUNT = 100;
@@ -1576,20 +1376,6 @@ namespace MissionPlanner.GCSViews
                     // update map
                     if (tracklast.AddSeconds(1.2) < DateTime.Now)
                     {
-                        // show disable joystick button
-                        if (MainV2.joystick != null && MainV2.joystick.enabled)
-                        {
-                            this.Invoke((MethodInvoker) delegate {
-                                but_disablejoystick.Visible = true;
-                            });
-                        }
-
-                        if (Settings.Instance.GetBoolean("CHK_maprotation"))
-                        {
-                            // dont holdinvalidation here
-                            setMapBearing();
-                        }
-
                         if (route == null)
                         {
                             route = new GMapRoute(trackPoints, "track");
@@ -1597,8 +1383,6 @@ namespace MissionPlanner.GCSViews
                         }
 
                         PointLatLng currentloc = new PointLatLng(MainV2.comPort.MAV.cs.lat, MainV2.comPort.MAV.cs.lng);
-
-                        gMapControl1.HoldInvalidation = true;
 
                         int numTrackLength = Settings.Instance.GetInt32("NUM_tracklength");
                         // maintain route history length
@@ -1613,8 +1397,6 @@ namespace MissionPlanner.GCSViews
                             route.Points.Add(currentloc);
                         }
 
-                        updateRoutePosition();
-
                         // update programed wp course
                         if (waypoints.AddSeconds(5) < DateTime.Now)
                         {
@@ -1623,7 +1405,6 @@ namespace MissionPlanner.GCSViews
 
                             float dist = 0;
                             float travdist = 0;
-                            distanceBar1.ClearWPDist();
                             MAVLink.mavlink_mission_item_t lastplla = new MAVLink.mavlink_mission_item_t();
                             MAVLink.mavlink_mission_item_t home = new MAVLink.mavlink_mission_item_t();
 
@@ -1660,8 +1441,6 @@ namespace MissionPlanner.GCSViews
                                             new PointLatLngAlt(plla.x, plla.y).GetDistance(new PointLatLngAlt(
                                                 lastplla.x, lastplla.y));
 
-                                    distanceBar1.AddWPDist(dist);
-
                                     if (plla.seq <= MainV2.comPort.MAV.cs.wpno)
                                     {
                                         travdist += dist;
@@ -1687,33 +1466,8 @@ namespace MissionPlanner.GCSViews
 
                             travdist -= MainV2.comPort.MAV.cs.wp_dist;
 
-                            if (MainV2.comPort.MAV.cs.mode.ToUpper() == "AUTO")
-                                distanceBar1.traveleddist = travdist;
-
                             RegeneratePolygon();
-
-                            // update rally points
-
-                            rallypointoverlay.Markers.Clear();
-
-                            foreach (var mark in MainV2.comPort.MAV.rallypoints.Values)
-                            {
-                                rallypointoverlay.Markers.Add(new GMapMarkerRallyPt(mark));
-                            }
-
-                            // optional on Flight data
-                            if (MainV2.ShowAirports)
-                            {
-                                // airports
-                                foreach (var item in Airports.getAirports(gMapControl1.Position))
-                                {
-                                    rallypointoverlay.Markers.Add(new GMapMarkerAirport(item)
-                                    {
-                                        ToolTipText = item.Tag,
-                                        ToolTipMode = MarkerTooltipMode.OnMouseOver
-                                    });
-                                }
-                            }
+                            
                             waypoints = DateTime.Now;
                         }
 
@@ -1763,11 +1517,6 @@ namespace MissionPlanner.GCSViews
                                 }
                             }
 
-                            
-                            // cleanup old - no markers where added, so remove all old 
-                            if (MainV2.comPort.MAV.camerapoints.Count == 0)
-                                photosoverlay.Markers.Clear();
-
                             var min_interval = 0.0;
                             if (MainV2.comPort.MAV.param.ContainsKey("CAM_MIN_INTERVAL"))
                                 min_interval = MainV2.comPort.MAV.param["CAM_MIN_INTERVAL"].Value/1000.0;
@@ -1777,60 +1526,6 @@ namespace MissionPlanner.GCSViews
                             {
                                 GMapMarkerPhoto.hfov = Settings.Instance.GetDouble("camera_fovh");
                                 GMapMarkerPhoto.vfov = Settings.Instance.GetDouble("camera_fovv");
-                            }
-
-                            // add new - populate camera_feedback to map
-                            double oldtime = double.MinValue;
-                            foreach (var mark in MainV2.comPort.MAV.camerapoints.ToArray())
-                            {
-                                var timesincelastshot = (mark.time_usec/1000.0)/1000.0 - oldtime;
-                                MainV2.comPort.MAV.cs.timesincelastshot = timesincelastshot;
-                                bool contains = photosoverlay.Markers.Any(p => p.Tag.Equals(mark.time_usec));
-                                if (!contains)
-                                {
-                                    if (timesincelastshot < min_interval)
-                                        addMissionPhotoMarker(new GMapMarkerPhoto(mark, true));
-                                    else
-                                        addMissionPhotoMarker(new GMapMarkerPhoto(mark, false));
-                                }
-                                oldtime = (mark.time_usec/1000.0)/1000.0;
-                            }
-                            
-                            // age current
-                            int camcount = MainV2.comPort.MAV.camerapoints.Count;
-                            int a = 0;
-                            foreach (var mark in photosoverlay.Markers)
-                            {
-                                if (mark is GMapMarkerPhoto)
-                                {
-                                    if (CameraOverlap)
-                                    {
-                                        var marker = ((GMapMarkerPhoto) mark);
-                                        // abandon roll higher than 25 degrees
-                                        if (Math.Abs(marker.Roll) < 25)
-                                        {
-                                            MainV2.comPort.MAV.GMapMarkerOverlapCount.Add(
-                                                ((GMapMarkerPhoto) mark).footprintpoly);
-                                        }
-                                    }
-                                    if (a < (camcount-4))
-                                        ((GMapMarkerPhoto)mark).drawfootprint = false;
-                                }
-                                a++;
-                            }
-
-                            if (CameraOverlap)
-                            {
-                                if (!kmlpolygons.Markers.Contains(MainV2.comPort.MAV.GMapMarkerOverlapCount) &&
-                                    camcount > 0)
-                                {
-                                    kmlpolygons.Markers.Clear();
-                                    kmlpolygons.Markers.Add(MainV2.comPort.MAV.GMapMarkerOverlapCount);
-                                }
-                            }
-                            else if (kmlpolygons.Markers.Contains(MainV2.comPort.MAV.GMapMarkerOverlapCount))
-                            {
-                                kmlpolygons.Markers.Clear();
                             }
                         }
                         catch
@@ -1896,26 +1591,6 @@ namespace MissionPlanner.GCSViews
                                     addMissionRouteMarker(marker);
                                 }
                             }
-
-                            if (route.Points.Count == 0 || route.Points[route.Points.Count - 1].Lat != 0 &&
-                                (mapupdate.AddSeconds(3) < DateTime.Now) && CHK_autopan.Checked)
-                            {
-                                updateMapPosition(currentloc);
-                                mapupdate = DateTime.Now;
-                            }
-
-                            if (route.Points.Count == 1 && gMapControl1.Zoom == 3) // 3 is the default load zoom
-                            {
-                                updateMapPosition(currentloc);
-                                updateMapZoom(17);
-                            }
-                        }
-
-                        gMapControl1.HoldInvalidation = false;
-
-                        if (gMapControl1.Visible)
-                        {
-                            gMapControl1.Invalidate();
                         }
 
                         tracklast = DateTime.Now;
@@ -1996,11 +1671,6 @@ namespace MissionPlanner.GCSViews
             });
         }
 
-        private void setMapBearing()
-        {
-            Invoke((MethodInvoker) delegate { gMapControl1.Bearing = (int) MainV2.comPort.MAV.cs.yaw; });
-        }
-
         // to prevent cross thread calls while in a draw and exception
         private void updateClearRoutes()
         {
@@ -2024,30 +1694,12 @@ namespace MissionPlanner.GCSViews
             });
         }
 
-        private void updateRoutePosition()
-        {
-            // not async
-            Invoke((MethodInvoker) delegate
-            {
-                gMapControl1.UpdateRouteLocalPosition(route);
-            });
-        }
-
         private void addMissionRouteMarker(GMapMarker marker)
         {
             // not async
             Invoke((MethodInvoker)delegate
             {
                 routes.Markers.Add(marker);
-            });
-        }
-
-        private void addMissionPhotoMarker(GMapMarker marker)
-        {
-            // not async
-            Invoke((MethodInvoker)delegate
-            {
-                photosoverlay.Markers.Add(marker);
             });
         }
 
@@ -2164,42 +1816,6 @@ namespace MissionPlanner.GCSViews
         /// Try to reduce the number of map position changes generated by the code
         /// </summary>
         DateTime lastmapposchange = DateTime.MinValue;
-
-        private void updateMapPosition(PointLatLng currentloc)
-        {
-            Invoke((MethodInvoker) delegate
-            {
-                try
-                {
-                    if (lastmapposchange.Second != DateTime.Now.Second)
-                    {
-                        if (Math.Abs(currentloc.Lat - gMapControl1.Position.Lat) > 0.0001 || Math.Abs(currentloc.Lng - gMapControl1.Position.Lng) > 0.0001)
-                        {
-                            gMapControl1.Position = currentloc;
-                        }
-                        lastmapposchange = DateTime.Now;
-                    }
-                    //hud1.Refresh();
-                }
-                catch
-                {
-                }
-            });
-        }
-
-        private void updateMapZoom(int zoom)
-        {
-            Invoke((MethodInvoker) delegate
-            {
-                try
-                {
-                    gMapControl1.Zoom = zoom;
-                }
-                catch
-                {
-                }
-            });
-        }
 
         private void updateLogPlayPosition()
         {
@@ -2510,25 +2126,6 @@ namespace MissionPlanner.GCSViews
             //attitudeIndicatorInstrumentControl1;
         }
 
-        private void CB_tuning_CheckedChanged(object sender, EventArgs e)
-        {
-            if (CB_tuning.Checked)
-            {
-                splitContainer1.Panel1Collapsed = false;
-                ZedGraphTimer.Enabled = true;
-                ZedGraphTimer.Start();
-                zg1.Visible = true;
-                zg1.Refresh();
-            }
-            else
-            {
-                splitContainer1.Panel1Collapsed = true;
-                ZedGraphTimer.Enabled = false;
-                ZedGraphTimer.Stop();
-                zg1.Visible = false;
-            }
-        }
-
         private void clearTunedData()
         {
             nMinSat = 0;
@@ -2625,29 +2222,6 @@ namespace MissionPlanner.GCSViews
 
         internal PointLatLng MouseDownStart;
 
-        private void gMapControl1_MouseDown(object sender, MouseEventArgs e)
-        {
-            MouseDownStart = gMapControl1.FromLocalToLatLng(e.X, e.Y);
-
-            if (ModifierKeys == Keys.Control)
-            {
-                goHereToolStripMenuItem_Click(null, null);
-            }
-
-            if (gMapControl1.IsMouseOverMarker)
-            {
-                if (CurrentGMapMarker is GMapMarkerADSBPlane)
-                {
-                    var marker = CurrentGMapMarker as GMapMarkerADSBPlane;
-                    if (marker.Tag is adsb.PointLatLngAltHdg)
-                    {
-                        var plla = marker.Tag as adsb.PointLatLngAltHdg;
-                        plla.DisplayICAO = !plla.DisplayICAO;
-                    }
-                }
-            }
-        }
-
         private void goHereToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!MainV2.comPort.BaseStream.IsOpen)
@@ -2685,62 +2259,6 @@ namespace MissionPlanner.GCSViews
             {
                 MainV2.comPort.giveComport = false;
                 CustomMessageBox.Show(Strings.CommandFailed + ex.Message, Strings.ERROR);
-            }
-        }
-
-        private void Zoomlevel_ValueChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (gMapControl1.MaxZoom + 1 == (double) Zoomlevel.Value)
-                {
-                    gMapControl1.Zoom = (double) Zoomlevel.Value - .1;
-                }
-                else
-                {
-                    gMapControl1.Zoom = (double) Zoomlevel.Value;
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        private void gMapControl1_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                try
-                {
-                    gMapControl1.Core.BeginDrag(new GPoint(e.Location.X, e.Location.Y));
-                }
-                catch
-                {
-                }
-            }
-            else
-            {
-                // setup a ballon with home distance
-                if (marker != null)
-                {
-                    if (routes.Markers.Contains(marker))
-                        routes.Markers.Remove(marker);
-                }
-
-                if (Settings.Instance.GetBoolean("CHK_disttohomeflightdata") != false)
-                {
-                    PointLatLng point = gMapControl1.FromLocalToLatLng(e.X, e.Y);
-
-                    marker = new GMapMarkerRect(point);
-                    marker.ToolTip = new GMapToolTip(marker);
-                    marker.ToolTipMode = MarkerTooltipMode.Always;
-                    marker.ToolTipText = "Dist to Home: " +
-                                         ((gMapControl1.MapProvider.Projection.GetDistance(point,
-                                             MainV2.comPort.MAV.cs.HomeLocation.Point())*1000)*
-                                          CurrentState.multiplierdist).ToString("0");
-
-                    routes.Markers.Add(marker);
-                }
             }
         }
 
@@ -2834,11 +2352,6 @@ namespace MissionPlanner.GCSViews
             {
                 MainV2.comPort.MAV.cs.altoffsethome = -MainV2.comPort.MAV.cs.HomeAlt/CurrentState.multiplierdist;
             }
-        }
-
-        private void gMapControl1_Resize(object sender, EventArgs e)
-        {
-            gMapControl1.Zoom = gMapControl1.Zoom + 0.01;
         }
 
         private void BUT_loadtelem_Click(object sender, EventArgs e)
@@ -3770,14 +3283,7 @@ namespace MissionPlanner.GCSViews
                 CustomMessageBox.Show(Strings.CommandFailed, Strings.ERROR);
             }
         }
-
-        private void CHK_autopan_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.Instance["CHK_autopan"] = CHK_autopan.Checked.ToString();
-
-            //GCSViews.FlightPlanner.instance.autopan = CHK_autopan.Checked;
-        }
-
+        
         private void setMJPEGSourceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string url = Settings.Instance["mjpeg_url"] != null
@@ -3953,50 +3459,12 @@ namespace MissionPlanner.GCSViews
             }
         }
 
-        private void flightPlannerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (Control ctl in splitContainer1.Panel2.Controls)
-            {
-                ctl.Visible = false;
-            }
-
-            foreach (MainSwitcher.Screen sc in MainV2.View.screens)
-            {
-                if (sc.Name == "FlightPlanner")
-                {
-                    MyButton but = new MyButton
-                    {
-                        Location = new Point(splitContainer1.Panel2.Width/2, 0),
-                        Text = "Close"
-                    };
-                    but.Click += but_Click;
-
-                    splitContainer1.Panel2.Controls.Add(but);
-                    splitContainer1.Panel2.Controls.Add(sc.Control);
-                    ThemeManager.ApplyThemeTo(sc.Control);
-
-                    sc.Control.Dock = DockStyle.Fill;
-                    sc.Control.Visible = true;
-
-                    if (sc.Control is IActivate)
-                    {
-                        ((IActivate) (sc.Control)).Activate();
-                    }
-
-                    but.BringToFront();
-                    break;
-                }
-            }
-        }
-
         void but_Click(object sender, EventArgs e)
         {
             foreach (MainSwitcher.Screen sc in MainV2.View.screens)
             {
                 if (sc.Name == "FlightPlanner")
                 {
-                    splitContainer1.Panel2.Controls.Remove(sc.Control);
-                    splitContainer1.Panel2.Controls.Remove((Control) sender);
                     sc.Control.Visible = false;
 
                     if (sc.Control is IDeactivate)
@@ -4006,11 +3474,6 @@ namespace MissionPlanner.GCSViews
 
                     break;
                 }
-            }
-
-            foreach (Control ctl in splitContainer1.Panel2.Controls)
-            {
-                ctl.Visible = true;
             }
         }
 
@@ -4143,26 +3606,6 @@ namespace MissionPlanner.GCSViews
             catch
             {
                 CustomMessageBox.Show(Strings.CommandFailed, Strings.ERROR);
-            }
-        }
-
-        private void TRK_zoom_Scroll(object sender, EventArgs e)
-        {
-            try
-            {
-                if (gMapControl1.MaxZoom + 1 == (double) TRK_zoom.Value)
-                {
-                    gMapControl1.Zoom = TRK_zoom.Value - .1;
-                }
-                else
-                {
-                    gMapControl1.Zoom = TRK_zoom.Value;
-                }
-
-                UpdateOverlayVisibility();
-            }
-            catch
-            {
             }
         }
 
@@ -4754,29 +4197,6 @@ namespace MissionPlanner.GCSViews
             MainV2.comPort.doAbortLand();
         }
 
-        private void gMapControl1_OnPositionChanged(PointLatLng point)
-        {
-            UpdateOverlayVisibility();
-        }
-
-        void UpdateOverlayVisibility()
-        {
-            // change overlay visability
-            if (gMapControl1.ViewArea != null)
-            {
-                var bounds = gMapControl1.ViewArea;
-                bounds.Inflate(1, 1);
-
-                foreach (var poly in kmlpolygons.Polygons)
-                {
-                    if (bounds.Contains(poly.Points[0]))
-                        poly.IsVisible = true;
-                    else
-                        poly.IsVisible = false;
-                }
-            }
-        }
-
         private void but_disablejoystick_Click(object sender, EventArgs e)
         {
             if (MainV2.joystick != null && MainV2.joystick.enabled)
@@ -4784,8 +4204,6 @@ namespace MissionPlanner.GCSViews
                 MainV2.joystick.enabled = false;
 
                 MainV2.joystick.clearRCOverride();
-
-                but_disablejoystick.Visible = false;
             }
         }
 

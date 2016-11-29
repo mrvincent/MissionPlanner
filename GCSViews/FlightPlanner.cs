@@ -561,8 +561,6 @@ namespace MissionPlanner.GCSViews
             comboBoxMapType.DataSource = GMapProviders.List.ToArray();
             comboBoxMapType.SelectedItem = MainMap.MapProvider;
 
-            comboBoxMapType.SelectedValueChanged += comboBoxMapType_SelectedValueChanged;
-
             MainMap.RoutesEnabled = true;
 
             //MainMap.MaxZoom = 18;
@@ -3792,20 +3790,6 @@ namespace MissionPlanner.GCSViews
 
         #endregion
 
-        private void comboBoxMapType_SelectedValueChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                MainMap.MapProvider = (GMapProvider) comboBoxMapType.SelectedItem;
-                FlightData.mymap.MapProvider = (GMapProvider) comboBoxMapType.SelectedItem;
-                Settings.Instance["MapType"] = comboBoxMapType.Text;
-            }
-            catch
-            {
-                CustomMessageBox.Show("Map change failed. try zooming out first.");
-            }
-        }
-
         private void Commands_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             if (e.Control.GetType() == typeof (DataGridViewComboBoxEditingControl))
@@ -4647,21 +4631,6 @@ namespace MissionPlanner.GCSViews
 
                 geofenceoverlay.Polygons.Add(geofencepolygon);
 
-                // update flightdata
-                FlightData.geofence.Markers.Clear();
-                FlightData.geofence.Polygons.Clear();
-                FlightData.geofence.Polygons.Add(new GMapPolygon(geofencepolygon.Points, "gf fd")
-                {
-                    Stroke = geofencepolygon.Stroke,
-                    Fill = Brushes.Transparent
-                });
-                FlightData.geofence.Markers.Add(new GMarkerGoogle(geofenceoverlay.Markers[0].Position,
-                    GMarkerGoogleType.red)
-                {
-                    ToolTipText = geofenceoverlay.Markers[0].ToolTipText,
-                    ToolTipMode = geofenceoverlay.Markers[0].ToolTipMode
-                });
-
                 MainMap.UpdatePolygonLocalPosition(geofencepolygon);
                 MainMap.UpdateMarkerLocalPosition(geofenceoverlay.Markers[0]);
 
@@ -4721,20 +4690,6 @@ namespace MissionPlanner.GCSViews
 
             // add now - so local points are calced
             geofenceoverlay.Polygons.Add(geofencepolygon);
-
-            // update flight data
-            FlightData.geofence.Markers.Clear();
-            FlightData.geofence.Polygons.Clear();
-            FlightData.geofence.Polygons.Add(new GMapPolygon(geofencepolygon.Points, "gf fd")
-            {
-                Stroke = geofencepolygon.Stroke,
-                Fill = Brushes.Transparent
-            });
-            FlightData.geofence.Markers.Add(new GMarkerGoogle(geofenceoverlay.Markers[0].Position, GMarkerGoogleType.red)
-            {
-                ToolTipText = geofenceoverlay.Markers[0].ToolTipText,
-                ToolTipMode = geofenceoverlay.Markers[0].ToolTipMode
-            });
 
             MainMap.UpdatePolygonLocalPosition(geofencepolygon);
             MainMap.UpdateMarkerLocalPosition(geofenceoverlay.Markers[0]);
@@ -5243,8 +5198,6 @@ namespace MissionPlanner.GCSViews
                     kmlpolygonsoverlay.Polygons.Clear();
                     kmlpolygonsoverlay.Routes.Clear();
 
-                    FlightData.kmlpolygons.Routes.Clear();
-                    FlightData.kmlpolygons.Polygons.Clear();
                     if (file.ToLower().EndsWith("dxf"))
                     {
                         string zone = "-99";
@@ -5302,20 +5255,6 @@ namespace MissionPlanner.GCSViews
 
                             parser.ElementAdded += parser_ElementAdded;
                             parser.ParseString(kml, false);
-
-                            if (DialogResult.Yes ==
-                                CustomMessageBox.Show(Strings.Do_you_want_to_load_this_into_the_flight_data_screen, Strings.Load_data,
-                                    MessageBoxButtons.YesNo))
-                            {
-                                foreach (var temp in kmlpolygonsoverlay.Polygons)
-                                {
-                                    FlightData.kmlpolygons.Polygons.Add(temp);
-                                }
-                                foreach (var temp in kmlpolygonsoverlay.Routes)
-                                {
-                                    FlightData.kmlpolygons.Routes.Add(temp);
-                                }
-                            }
 
                             if (
                                 CustomMessageBox.Show(Strings.Zoom_To, Strings.Zoom_to_the_center_or_the_loaded_file, MessageBoxButtons.YesNo) ==

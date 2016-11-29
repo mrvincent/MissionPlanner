@@ -463,7 +463,6 @@
             resources.ApplyResources(this.CHK_maprotation, "CHK_maprotation");
             this.CHK_maprotation.Name = "CHK_maprotation";
             this.CHK_maprotation.UseVisualStyleBackColor = true;
-            this.CHK_maprotation.CheckedChanged += new System.EventHandler(this.CHK_maprotation_CheckedChanged);
             // 
             // label2
             // 

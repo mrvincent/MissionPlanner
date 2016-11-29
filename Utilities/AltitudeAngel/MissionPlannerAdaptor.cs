@@ -14,7 +14,6 @@ namespace MissionPlanner.Utilities.AltitudeAngel
 
         public MissionPlannerAdaptor()
         {
-            FlightDataMap = new MapAdapter(FlightData.instance.gMapControl1);
             FlightPlanningMap = new MapAdapter(FlightPlanner.instance.MainMap);
         }
 

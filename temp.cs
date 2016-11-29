@@ -803,16 +803,6 @@ namespace MissionPlanner
             }
         }
 
-        private void but_agemapdata_Click(object sender, EventArgs e)
-        {
-            var removed = ((PureImageCache) MyImageCache.Instance).DeleteOlderThan(DateTime.Now.AddDays(-30),
-                FlightData.instance.gMapControl1.MapProvider.DbId);
-
-            CustomMessageBox.Show("Removed " + removed + " images");
-
-            log.InfoFormat("Removed {0} images", removed);
-        }
-
         private void myButton1_Click_2(object sender, EventArgs e)
         {
             ParameterMetaDataParser.GetParameterInformation(

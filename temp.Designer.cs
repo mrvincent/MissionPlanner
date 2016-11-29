@@ -777,7 +777,6 @@
             this.but_agemapdata.TabIndex = 75;
             this.but_agemapdata.Text = "Age Map Data";
             this.but_agemapdata.UseVisualStyleBackColor = true;
-            this.but_agemapdata.Click += new System.EventHandler(this.but_agemapdata_Click);
             // 
             // myButton1
             // 

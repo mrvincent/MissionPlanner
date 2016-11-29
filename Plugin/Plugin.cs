@@ -197,14 +197,6 @@ namespace MissionPlanner.Plugin
         }
 
         /// <summary>
-        /// the map control in flightdata
-        /// </summary>
-        public GMapControl FDGMapControl
-        {
-            get { return MainV2.instance.FlightData.gMapControl1; }
-        }
-
-        /// <summary>
         /// add wp to command queue - dont upload to mav
         /// </summary>
         /// <param name="cmd"></param>

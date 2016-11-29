@@ -120,8 +120,19 @@
             this.tabPagemessages = new System.Windows.Forms.TabPage();
             this.txt_messagebox = new System.Windows.Forms.TextBox();
             this.tableMap = new System.Windows.Forms.TableLayoutPanel();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.zg1 = new ZedGraph.ZedGraphControl();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label_mountlevel = new System.Windows.Forms.Label();
+            this.label_Yaw = new System.Windows.Forms.Label();
+            this.label_Rotation = new System.Windows.Forms.Label();
+            this.label_weight = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.textBox_aircraftNo = new System.Windows.Forms.TextBox();
+            this.button_save = new System.Windows.Forms.Button();
+            this.coords1 = new MissionPlanner.Controls.Coords();
+            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.lbl_hdop = new MissionPlanner.Controls.MyLabel();
+            this.lbl_sats = new MissionPlanner.Controls.MyLabel();
             this.contextMenuStripMap = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.goHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flyToHereAltToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -137,27 +148,6 @@
             this.takeOffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onOffCameraOverlapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.altitudeAngelSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.but_disablejoystick = new MissionPlanner.Controls.MyButton();
-            this.distanceBar1 = new MissionPlanner.Controls.DistanceBar();
-            this.windDir1 = new MissionPlanner.Controls.WindDir();
-            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.gMapControl1 = new MissionPlanner.Controls.myGMAP();
-            this.TRK_zoom = new MissionPlanner.Controls.MyTrackBar();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label7 = new System.Windows.Forms.Label();
-            this.textBox_aircraftNo = new System.Windows.Forms.TextBox();
-            this.button_save = new System.Windows.Forms.Button();
-            this.coords1 = new MissionPlanner.Controls.Coords();
-            this.Zoomlevel = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new MissionPlanner.Controls.MyLabel();
-            this.CHK_autopan = new System.Windows.Forms.CheckBox();
-            this.CB_tuning = new System.Windows.Forms.CheckBox();
-            this.lbl_hdop = new MissionPlanner.Controls.MyLabel();
-            this.lbl_sats = new MissionPlanner.Controls.MyLabel();
             this.ZedGraphTimer = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.openScriptDialog = new System.Windows.Forms.OpenFileDialog();
@@ -166,10 +156,6 @@
             this.dataGridViewImageColumn2 = new System.Windows.Forms.DataGridViewImageColumn();
             this.Messagetabtimer = new System.Windows.Forms.Timer(this.components);
             this.bindingSourceStatusTab = new System.Windows.Forms.BindingSource(this.components);
-            this.label_weight = new System.Windows.Forms.Label();
-            this.label_Rotation = new System.Windows.Forms.Label();
-            this.label_Yaw = new System.Windows.Forms.Label();
-            this.label_mountlevel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MainH)).BeginInit();
             this.MainH.Panel1.SuspendLayout();
             this.MainH.Panel2.SuspendLayout();
@@ -200,15 +186,9 @@
             this.tabScripts.SuspendLayout();
             this.tabPagemessages.SuspendLayout();
             this.tableMap.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            this.contextMenuStripMap.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TRK_zoom)).BeginInit();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Zoomlevel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
+            this.contextMenuStripMap.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceStatusTab)).BeginInit();
             this.SuspendLayout();
             // 
@@ -1640,32 +1620,9 @@
             // tableMap
             // 
             resources.ApplyResources(this.tableMap, "tableMap");
-            this.tableMap.Controls.Add(this.splitContainer1, 0, 0);
+            this.tableMap.Controls.Add(this.zg1, 0, 0);
             this.tableMap.Controls.Add(this.panel1, 0, 1);
             this.tableMap.Name = "tableMap";
-            // 
-            // splitContainer1
-            // 
-            resources.ApplyResources(this.splitContainer1, "splitContainer1");
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.zg1);
-            this.splitContainer1.Panel1Collapsed = true;
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.ContextMenuStrip = this.contextMenuStripMap;
-            this.splitContainer1.Panel2.Controls.Add(this.but_disablejoystick);
-            this.splitContainer1.Panel2.Controls.Add(this.distanceBar1);
-            this.splitContainer1.Panel2.Controls.Add(this.windDir1);
-            this.splitContainer1.Panel2.Controls.Add(this.label6);
-            this.splitContainer1.Panel2.Controls.Add(this.label5);
-            this.splitContainer1.Panel2.Controls.Add(this.label3);
-            this.splitContainer1.Panel2.Controls.Add(this.label4);
-            this.splitContainer1.Panel2.Controls.Add(this.gMapControl1);
-            this.splitContainer1.Panel2.Controls.Add(this.TRK_zoom);
             // 
             // zg1
             // 
@@ -1679,6 +1636,92 @@
             this.zg1.ScrollMinY = 0D;
             this.zg1.ScrollMinY2 = 0D;
             this.zg1.DoubleClick += new System.EventHandler(this.zg1_DoubleClick);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.label_mountlevel);
+            this.panel1.Controls.Add(this.label_Yaw);
+            this.panel1.Controls.Add(this.label_Rotation);
+            this.panel1.Controls.Add(this.label_weight);
+            this.panel1.Controls.Add(this.label7);
+            this.panel1.Controls.Add(this.textBox_aircraftNo);
+            this.panel1.Controls.Add(this.button_save);
+            this.panel1.Controls.Add(this.coords1);
+            this.panel1.Controls.Add(this.lbl_hdop);
+            this.panel1.Controls.Add(this.lbl_sats);
+            resources.ApplyResources(this.panel1, "panel1");
+            this.panel1.Name = "panel1";
+            // 
+            // label_mountlevel
+            // 
+            resources.ApplyResources(this.label_mountlevel, "label_mountlevel");
+            this.label_mountlevel.Name = "label_mountlevel";
+            // 
+            // label_Yaw
+            // 
+            resources.ApplyResources(this.label_Yaw, "label_Yaw");
+            this.label_Yaw.Name = "label_Yaw";
+            // 
+            // label_Rotation
+            // 
+            resources.ApplyResources(this.label_Rotation, "label_Rotation");
+            this.label_Rotation.Name = "label_Rotation";
+            // 
+            // label_weight
+            // 
+            resources.ApplyResources(this.label_weight, "label_weight");
+            this.label_weight.Name = "label_weight";
+            // 
+            // label7
+            // 
+            resources.ApplyResources(this.label7, "label7");
+            this.label7.Name = "label7";
+            // 
+            // textBox_aircraftNo
+            // 
+            resources.ApplyResources(this.textBox_aircraftNo, "textBox_aircraftNo");
+            this.textBox_aircraftNo.Name = "textBox_aircraftNo";
+            // 
+            // button_save
+            // 
+            resources.ApplyResources(this.button_save, "button_save");
+            this.button_save.Name = "button_save";
+            this.button_save.UseVisualStyleBackColor = true;
+            this.button_save.Click += new System.EventHandler(this.button_save_Click);
+            // 
+            // coords1
+            // 
+            this.coords1.Alt = 0D;
+            this.coords1.AltSource = "";
+            this.coords1.AltUnit = "m";
+            this.coords1.DataBindings.Add(new System.Windows.Forms.Binding("Alt", this.bindingSource1, "alt", true));
+            this.coords1.DataBindings.Add(new System.Windows.Forms.Binding("Lat", this.bindingSource1, "lat", true));
+            this.coords1.DataBindings.Add(new System.Windows.Forms.Binding("Lng", this.bindingSource1, "lng", true));
+            this.coords1.Lat = 0D;
+            this.coords1.Lng = 0D;
+            resources.ApplyResources(this.coords1, "coords1");
+            this.coords1.Name = "coords1";
+            this.coords1.Vertical = false;
+            // 
+            // bindingSource1
+            // 
+            this.bindingSource1.DataSource = typeof(MissionPlanner.CurrentState);
+            // 
+            // lbl_hdop
+            // 
+            resources.ApplyResources(this.lbl_hdop, "lbl_hdop");
+            this.lbl_hdop.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource1, "gpshdop", true, System.Windows.Forms.DataSourceUpdateMode.Never, null, "hdop: 0.0"));
+            this.lbl_hdop.Name = "lbl_hdop";
+            this.lbl_hdop.resize = true;
+            this.toolTip1.SetToolTip(this.lbl_hdop, resources.GetString("lbl_hdop.ToolTip"));
+            // 
+            // lbl_sats
+            // 
+            resources.ApplyResources(this.lbl_sats, "lbl_sats");
+            this.lbl_sats.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource1, "satcount", true, System.Windows.Forms.DataSourceUpdateMode.Never, null, "Sats: 0"));
+            this.lbl_sats.Name = "lbl_sats";
+            this.lbl_sats.resize = true;
+            this.toolTip1.SetToolTip(this.lbl_sats, resources.GetString("lbl_sats.ToolTip"));
             // 
             // contextMenuStripMap
             // 
@@ -1759,7 +1802,6 @@
             // 
             this.flightPlannerToolStripMenuItem.Name = "flightPlannerToolStripMenuItem";
             resources.ApplyResources(this.flightPlannerToolStripMenuItem, "flightPlannerToolStripMenuItem");
-            this.flightPlannerToolStripMenuItem.Click += new System.EventHandler(this.flightPlannerToolStripMenuItem_Click);
             // 
             // setHomeHereToolStripMenuItem
             // 
@@ -1785,223 +1827,6 @@
             this.altitudeAngelSettingsToolStripMenuItem.Name = "altitudeAngelSettingsToolStripMenuItem";
             resources.ApplyResources(this.altitudeAngelSettingsToolStripMenuItem, "altitudeAngelSettingsToolStripMenuItem");
             this.altitudeAngelSettingsToolStripMenuItem.Click += new System.EventHandler(this.altitudeAngelSettingsToolStripMenuItem_Click);
-            // 
-            // but_disablejoystick
-            // 
-            resources.ApplyResources(this.but_disablejoystick, "but_disablejoystick");
-            this.but_disablejoystick.Name = "but_disablejoystick";
-            this.but_disablejoystick.UseVisualStyleBackColor = true;
-            this.but_disablejoystick.Click += new System.EventHandler(this.but_disablejoystick_Click);
-            // 
-            // distanceBar1
-            // 
-            resources.ApplyResources(this.distanceBar1, "distanceBar1");
-            this.distanceBar1.BackColor = System.Drawing.Color.Black;
-            this.distanceBar1.Name = "distanceBar1";
-            this.distanceBar1.totaldist = 100F;
-            this.distanceBar1.traveleddist = 0F;
-            // 
-            // windDir1
-            // 
-            this.windDir1.BackColor = System.Drawing.Color.Transparent;
-            this.windDir1.DataBindings.Add(new System.Windows.Forms.Binding("Direction", this.bindingSource1, "wind_dir", true, System.Windows.Forms.DataSourceUpdateMode.Never));
-            this.windDir1.DataBindings.Add(new System.Windows.Forms.Binding("Speed", this.bindingSource1, "wind_vel", true, System.Windows.Forms.DataSourceUpdateMode.Never));
-            this.windDir1.Direction = 180D;
-            resources.ApplyResources(this.windDir1, "windDir1");
-            this.windDir1.Name = "windDir1";
-            this.windDir1.Speed = 0D;
-            // 
-            // bindingSource1
-            // 
-            this.bindingSource1.DataSource = typeof(MissionPlanner.CurrentState);
-            // 
-            // label6
-            // 
-            resources.ApplyResources(this.label6, "label6");
-            this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Name = "label6";
-            // 
-            // label5
-            // 
-            resources.ApplyResources(this.label5, "label5");
-            this.label5.ForeColor = System.Drawing.Color.Green;
-            this.label5.Name = "label5";
-            // 
-            // label3
-            // 
-            resources.ApplyResources(this.label3, "label3");
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.label3.Name = "label3";
-            // 
-            // label4
-            // 
-            resources.ApplyResources(this.label4, "label4");
-            this.label4.ForeColor = System.Drawing.Color.Red;
-            this.label4.Name = "label4";
-            // 
-            // gMapControl1
-            // 
-            this.gMapControl1.BackColor = System.Drawing.Color.Black;
-            this.gMapControl1.Bearing = 0F;
-            this.gMapControl1.CanDragMap = true;
-            this.gMapControl1.ContextMenuStrip = this.contextMenuStripMap;
-            resources.ApplyResources(this.gMapControl1, "gMapControl1");
-            this.gMapControl1.EmptyTileColor = System.Drawing.Color.Gray;
-            this.gMapControl1.GrayScaleMode = false;
-            this.gMapControl1.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
-            this.gMapControl1.LevelsKeepInMemmory = 5;
-            this.gMapControl1.MarkersEnabled = true;
-            this.gMapControl1.MaxZoom = 24;
-            this.gMapControl1.MinZoom = 0;
-            this.gMapControl1.MouseWheelZoomType = GMap.NET.MouseWheelZoomType.MousePositionAndCenter;
-            this.gMapControl1.Name = "gMapControl1";
-            this.gMapControl1.NegativeMode = false;
-            this.gMapControl1.PolygonsEnabled = true;
-            this.gMapControl1.RetryLoadTile = 0;
-            this.gMapControl1.RoutesEnabled = true;
-            this.gMapControl1.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Fractional;
-            this.gMapControl1.SelectedArea = ((GMap.NET.RectLatLng)(resources.GetObject("gMapControl1.SelectedArea")));
-            this.gMapControl1.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
-            this.gMapControl1.ShowTileGridLines = false;
-            this.gMapControl1.Zoom = 3D;
-            this.gMapControl1.OnPositionChanged += new GMap.NET.PositionChanged(this.gMapControl1_OnPositionChanged);
-            this.gMapControl1.Click += new System.EventHandler(this.gMapControl1_Click);
-            this.gMapControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.gMapControl1_MouseDown);
-            this.gMapControl1.MouseLeave += new System.EventHandler(this.gMapControl1_MouseLeave);
-            this.gMapControl1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gMapControl1_MouseMove);
-            // 
-            // TRK_zoom
-            // 
-            resources.ApplyResources(this.TRK_zoom, "TRK_zoom");
-            this.TRK_zoom.LargeChange = 1F;
-            this.TRK_zoom.Maximum = 24F;
-            this.TRK_zoom.Minimum = 1F;
-            this.TRK_zoom.Name = "TRK_zoom";
-            this.TRK_zoom.SmallChange = 1F;
-            this.TRK_zoom.TickFrequency = 1F;
-            this.TRK_zoom.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.TRK_zoom.Value = 1F;
-            this.TRK_zoom.Scroll += new System.EventHandler(this.TRK_zoom_Scroll);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.label_mountlevel);
-            this.panel1.Controls.Add(this.label_Yaw);
-            this.panel1.Controls.Add(this.label_Rotation);
-            this.panel1.Controls.Add(this.label_weight);
-            this.panel1.Controls.Add(this.label7);
-            this.panel1.Controls.Add(this.textBox_aircraftNo);
-            this.panel1.Controls.Add(this.button_save);
-            this.panel1.Controls.Add(this.coords1);
-            this.panel1.Controls.Add(this.Zoomlevel);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.CHK_autopan);
-            this.panel1.Controls.Add(this.CB_tuning);
-            this.panel1.Controls.Add(this.lbl_hdop);
-            this.panel1.Controls.Add(this.lbl_sats);
-            resources.ApplyResources(this.panel1, "panel1");
-            this.panel1.Name = "panel1";
-            // 
-            // label7
-            // 
-            resources.ApplyResources(this.label7, "label7");
-            this.label7.Name = "label7";
-            // 
-            // textBox_aircraftNo
-            // 
-            resources.ApplyResources(this.textBox_aircraftNo, "textBox_aircraftNo");
-            this.textBox_aircraftNo.Name = "textBox_aircraftNo";
-            // 
-            // button_save
-            // 
-            resources.ApplyResources(this.button_save, "button_save");
-            this.button_save.Name = "button_save";
-            this.button_save.UseVisualStyleBackColor = true;
-            this.button_save.Click += new System.EventHandler(this.button_save_Click);
-            // 
-            // coords1
-            // 
-            this.coords1.Alt = 0D;
-            this.coords1.AltSource = "";
-            this.coords1.AltUnit = "m";
-            this.coords1.DataBindings.Add(new System.Windows.Forms.Binding("Alt", this.bindingSource1, "alt", true));
-            this.coords1.DataBindings.Add(new System.Windows.Forms.Binding("Lat", this.bindingSource1, "lat", true));
-            this.coords1.DataBindings.Add(new System.Windows.Forms.Binding("Lng", this.bindingSource1, "lng", true));
-            this.coords1.Lat = 0D;
-            this.coords1.Lng = 0D;
-            resources.ApplyResources(this.coords1, "coords1");
-            this.coords1.Name = "coords1";
-            this.coords1.Vertical = false;
-            // 
-            // Zoomlevel
-            // 
-            resources.ApplyResources(this.Zoomlevel, "Zoomlevel");
-            this.Zoomlevel.DecimalPlaces = 1;
-            this.Zoomlevel.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            65536});
-            this.Zoomlevel.Maximum = new decimal(new int[] {
-            18,
-            0,
-            0,
-            0});
-            this.Zoomlevel.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.Zoomlevel.Name = "Zoomlevel";
-            this.toolTip1.SetToolTip(this.Zoomlevel, resources.GetString("Zoomlevel.ToolTip"));
-            this.Zoomlevel.Value = new decimal(new int[] {
-            7,
-            0,
-            0,
-            0});
-            this.Zoomlevel.ValueChanged += new System.EventHandler(this.Zoomlevel_ValueChanged);
-            // 
-            // label1
-            // 
-            resources.ApplyResources(this.label1, "label1");
-            this.label1.Name = "label1";
-            this.label1.resize = false;
-            // 
-            // CHK_autopan
-            // 
-            resources.ApplyResources(this.CHK_autopan, "CHK_autopan");
-            this.CHK_autopan.Checked = true;
-            this.CHK_autopan.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CHK_autopan.Name = "CHK_autopan";
-            this.toolTip1.SetToolTip(this.CHK_autopan, resources.GetString("CHK_autopan.ToolTip"));
-            this.CHK_autopan.UseVisualStyleBackColor = true;
-            this.CHK_autopan.CheckedChanged += new System.EventHandler(this.CHK_autopan_CheckedChanged);
-            // 
-            // CB_tuning
-            // 
-            resources.ApplyResources(this.CB_tuning, "CB_tuning");
-            this.CB_tuning.Checked = true;
-            this.CB_tuning.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CB_tuning.Name = "CB_tuning";
-            this.toolTip1.SetToolTip(this.CB_tuning, resources.GetString("CB_tuning.ToolTip"));
-            this.CB_tuning.UseVisualStyleBackColor = true;
-            this.CB_tuning.CheckedChanged += new System.EventHandler(this.CB_tuning_CheckedChanged);
-            // 
-            // lbl_hdop
-            // 
-            resources.ApplyResources(this.lbl_hdop, "lbl_hdop");
-            this.lbl_hdop.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource1, "gpshdop", true, System.Windows.Forms.DataSourceUpdateMode.Never, null, "hdop: 0.0"));
-            this.lbl_hdop.Name = "lbl_hdop";
-            this.lbl_hdop.resize = true;
-            this.toolTip1.SetToolTip(this.lbl_hdop, resources.GetString("lbl_hdop.ToolTip"));
-            // 
-            // lbl_sats
-            // 
-            resources.ApplyResources(this.lbl_sats, "lbl_sats");
-            this.lbl_sats.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource1, "satcount", true, System.Windows.Forms.DataSourceUpdateMode.Never, null, "Sats: 0"));
-            this.lbl_sats.Name = "lbl_sats";
-            this.lbl_sats.resize = true;
-            this.toolTip1.SetToolTip(this.lbl_sats, resources.GetString("lbl_sats.ToolTip"));
             // 
             // ZedGraphTimer
             // 
@@ -2047,26 +1872,6 @@
             // 
             this.bindingSourceStatusTab.DataSource = typeof(MissionPlanner.CurrentState);
             // 
-            // label_weight
-            // 
-            resources.ApplyResources(this.label_weight, "label_weight");
-            this.label_weight.Name = "label_weight";
-            // 
-            // label_Rotation
-            // 
-            resources.ApplyResources(this.label_Rotation, "label_Rotation");
-            this.label_Rotation.Name = "label_Rotation";
-            // 
-            // label_Yaw
-            // 
-            resources.ApplyResources(this.label_Yaw, "label_Yaw");
-            this.label_Yaw.Name = "label_Yaw";
-            // 
-            // label_mountlevel
-            // 
-            resources.ApplyResources(this.label_mountlevel, "label_mountlevel");
-            this.label_mountlevel.Name = "label_mountlevel";
-            // 
             // FlightData
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2075,7 +1880,6 @@
             this.MinimumSize = new System.Drawing.Size(1008, 462);
             this.Name = "FlightData";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FlightData_FormClosing);
-            this.Load += new System.EventHandler(this.FlightData_Load);
             this.Resize += new System.EventHandler(this.FlightData_Resize);
             this.ParentChanged += new System.EventHandler(this.FlightData_ParentChanged);
             this.MainH.Panel1.ResumeLayout(false);
@@ -2112,17 +1916,10 @@
             this.tabPagemessages.ResumeLayout(false);
             this.tabPagemessages.PerformLayout();
             this.tableMap.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
-            this.contextMenuStripMap.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TRK_zoom)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Zoomlevel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
+            this.contextMenuStripMap.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceStatusTab)).EndInit();
             this.ResumeLayout(false);
 
@@ -2139,7 +1936,6 @@
         private System.Windows.Forms.ToolStripMenuItem goHereToolStripMenuItem;
         private Controls.HUD hud1;
         private Controls.MyButton BUT_clear_track;
-        private System.Windows.Forms.CheckBox CB_tuning;
         private Controls.MyButton BUT_RAWSensor;
         private Controls.MyButton BUTactiondo;
         private Controls.MyButton BUTrestartmission;
@@ -2153,11 +1949,6 @@
         private AGaugeApp.AGauge Gvspeed;
         private System.Windows.Forms.TableLayoutPanel tableMap;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.NumericUpDown Zoomlevel;
-        private Controls.MyLabel label1;
-        private System.Windows.Forms.CheckBox CHK_autopan;
-        public Controls.myGMAP gMapControl1;
-        private ZedGraph.ZedGraphControl zg1;
         private System.Windows.Forms.TabControl tabControlactions;
         private System.Windows.Forms.TabPage tabGauges;
         private System.Windows.Forms.TabPage tabStatus;
@@ -2175,7 +1966,6 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private Controls.MyLabel lbl_logpercent;
         private System.Windows.Forms.ToolStripMenuItem pointCameraHereToolStripMenuItem;
-        private System.Windows.Forms.SplitContainer splitContainer1;
         private Controls.MyLabel lbl_hdop;
         private Controls.MyLabel lbl_sats;
         private Controls.HSI Gheading;
@@ -2196,7 +1986,6 @@
         private Controls.ModifyandSet modifyandSetAlt;
         private Controls.ModifyandSet modifyandSetSpeed;
         private System.Windows.Forms.ToolStripMenuItem triggerCameraToolStripMenuItem;
-        private Controls.MyTrackBar TRK_zoom;
         private Controls.MyLabel LBL_logfn;
         private System.Windows.Forms.TabPage tabServo;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelServos;
@@ -2224,10 +2013,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TabPage tablogbrowse;
         private Controls.MyButton BUT_logbrowse;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TabPage tabScripts;
         private Controls.MyButton BUT_edit_selected;
         private System.Windows.Forms.Label labelSelectedScript;
@@ -2249,7 +2034,6 @@
         private Controls.MyButton BUT_matlab;
         private System.Windows.Forms.ComboBox CMB_mountmode;
         private Controls.MyButton BUT_mountmode;
-        private Controls.WindDir windDir1;
         private Controls.MyButton but_bintolog;
         private Controls.MyButton but_dflogtokml;
         private Controls.MyButton BUT_DFMavlink;
@@ -2265,14 +2049,12 @@
         private System.Windows.Forms.ToolStripMenuItem addPoiToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveFileToolStripMenuItem;
-        private Controls.DistanceBar distanceBar1;
         private System.Windows.Forms.ToolStripMenuItem takeOffToolStripMenuItem;
         private Controls.MyButton BUT_resumemis;
         private System.Windows.Forms.TabPage tabPagePreFlight;
         private Controls.PreFlight.CheckListControl checkListControl1;
         private System.Windows.Forms.ToolStripMenuItem swapWithMapToolStripMenuItem;
         private Controls.MyButton BUT_abortland;
-        private Controls.MyButton but_disablejoystick;
         private System.Windows.Forms.ToolStripMenuItem videoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem recordHudToAVIToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setMJPEGSourceToolStripMenuItem;
@@ -2291,5 +2073,6 @@
         private System.Windows.Forms.Label label_Yaw;
         private System.Windows.Forms.Label label_Rotation;
         private System.Windows.Forms.Label label_weight;
+        private ZedGraph.ZedGraphControl zg1;
     }
 }
